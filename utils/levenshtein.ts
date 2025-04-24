@@ -1,4 +1,4 @@
-function levenshtein(string1: string, string2: string): number{
+export function levenshtein(string1: string, string2: string): number{
 
     if(typeof string1 !== "string" || typeof string2 !== "string"){
         throw new TypeError("Title must be of type string");
@@ -28,4 +28,6 @@ function levenshtein(string1: string, string2: string): number{
 
     if(rep <= ins && rep <= del) return 1 + rep;
     
+    return NaN;
 }
+
