@@ -1,0 +1,23 @@
+{
+  "name": "cinema-aggregator",
+  "version": "1.0.0",
+  "description": "A cinema aggregator that displays all possible showings of a movie across different theater chains",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brandeau/DESU.git"
+  },
+  "author": "Brandeau",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Brandeau/DESU/issues"
+  },
+  "homepage": "https://github.com/Brandeau/DESU#readme",
+  "devDependencies": {
+    "@types/node": "^22.15.2"
+  }
+}
