@@ -1,4 +1,4 @@
-import { levenshtein } from "./levenshtein";
+import { levenshtein } from "./levenshtein.ts";
 
 export function percentageLevenshtein(string1: string, string2: string): number{
     const distance = levenshtein(string1, string2);
