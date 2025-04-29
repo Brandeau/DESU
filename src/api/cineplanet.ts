@@ -1,5 +1,5 @@
 import fs from "node:fs"
-import  {getCookies}  from "../utils/getCookies.ts";
+import  {getCookies}  from "../../utils/getCookies.ts";
 
 const subKey = process.env.SUBSCRIPTION_KEY;
 
