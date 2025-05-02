@@ -21,6 +21,13 @@ export async function fetchReleases(url, date){
     return data;
 }
 
+export async function fetchBillboard(url, cinemaId){
 
+    const response = await fetch(`${url}/api/vista/data/billboard?cinema_id=${cinemaId}`);
+
+    const data = await response.json();
+
+    return data;
+}
 
 
