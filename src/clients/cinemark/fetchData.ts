@@ -1,6 +1,7 @@
 const BASE_URL = "https://api.cinemark.cl";
 const date = new Date();
 const now = date.toISOString().slice(0, 10);
+const cinemaId = 2305;
 
 export async function fetchTheatres(url){
 
@@ -12,12 +13,14 @@ export async function fetchTheatres(url){
 
 }
 
-export async function fetchReleases(url){
-    const response = await fetch(`${url}/api/vista/data/releases?date=${now}`);
+export async function fetchReleases(url, date){
+    const response = await fetch(`${url}/api/vista/data/releases?date=${date}`);
 
     const data = await response.json();
 
     return data;
 }
+
+
 
 
