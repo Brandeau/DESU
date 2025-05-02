@@ -1,6 +1,6 @@
 import { getCookies } from "./helpers/getCookies.ts";
 import { parseData } from "./helpers/parseData.ts";
-import { getMovies, getTheatres, getShowings } from "./helpers/fetchData.ts";
+import { getMovies, getTheatres, getShowings } from "./fetchData.ts";
 
 import fs from "node:fs";
 
