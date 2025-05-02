@@ -12,3 +12,12 @@ export async function fetchTheatres(url){
 
 }
 
+export async function fetchReleases(url){
+    const response = await fetch(`${url}/api/vista/data/releases?date=${now}`);
+
+    const data = await response.json();
+
+    return data;
+}
+
+
