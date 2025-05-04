@@ -15,7 +15,7 @@ const showings = await getShowings(cookie, url, subKey);
 const parsedMovies = parseData(movies, 'id', 'title', 'cinemas', 'isComingSoon');
 const parsedTheatres = parseData(theatres, 'ID', 'name', 'city');
 
-fs.writeFile("var/movies/movies.json", JSON.stringify(parsedMovies, null, 2), 'utf8', (err) => {
+fs.writeFile("var/cineplanet/movies.json", JSON.stringify(parsedMovies, null, 2), 'utf8', (err) => {
     if (err) {
       console.error('Error writing file:', err);
       return;
@@ -23,7 +23,7 @@ fs.writeFile("var/movies/movies.json", JSON.stringify(parsedMovies, null, 2), 'u
     console.log('File written successfully!');
   })
 
-  fs.writeFile("var/theatres/theatres.json", JSON.stringify(parsedTheatres, null, 2), 'utf8', (err) => {
+  fs.writeFile("var/cineplanet/theatres.json", JSON.stringify(parsedTheatres, null, 2), 'utf8', (err) => {
     if (err) {
       console.error('Error writing file:', err);
       return;
@@ -31,7 +31,7 @@ fs.writeFile("var/movies/movies.json", JSON.stringify(parsedMovies, null, 2), 'u
     console.log('File written successfully!');
   })
 
-  fs.writeFile("var/showings/showings.json", JSON.stringify(showings, null, 2), 'utf8', (err) => {
+  fs.writeFile("var/cineplanet/showings.json", JSON.stringify(showings, null, 2), 'utf8', (err) => {
     if (err) {
       console.error('Error writing file:', err);
       return;
