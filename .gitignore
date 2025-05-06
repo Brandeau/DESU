@@ -2,3 +2,5 @@
 node_modules
 .tool-versions
 .env
+temp
+var
