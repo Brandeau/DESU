@@ -1,6 +1,3 @@
-import { inspect } from "node:util";
-const BASE_URL ="https://cinepolischile.cl";
-
 export async function fetchMovieByCity(url, city){
 
     const response = await fetch(`${url}/Cartelera.aspx/GetNowPlayingByCity`, {
@@ -16,7 +13,7 @@ export async function fetchMovieByCity(url, city){
     return data;
 }
 
-export async function fetchTheatres(url){
+export async function fetchComplexes(url){
     const response = await fetch(`${url}/manejadores/CiudadesComplejos.ashx?EsVIP=false`);
 
     const data = await response.json();
@@ -24,6 +21,4 @@ export async function fetchTheatres(url){
     return data;
 }
 
-const comuna = await fetchMovieByCity(BASE_URL, "santiago-centro");
 
-console.log(inspect(comuna, {depth: 11, colors:true}));
