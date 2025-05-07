@@ -21,4 +21,10 @@ export async function fetchComplexes(url){
     return data;
 }
 
+export async function fetchTheatres(){
+    const response = await fetch("https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL");
 
+    const data = await response.json();
+
+    return data;
+};
