@@ -44,20 +44,34 @@ export class Cinemark {
 
         const movies = [];
 
-    arr[0]['movies'].forEach(movie => {
-        const re = /-[a-zA-Z]+[0-9]+/;
+    arr.forEach(element => {
+        element['movies'].forEach(movie => {
+            const idRe = /-[a-zA-Z]+[0-9]+/;
+            const titleRe = /^.+(?=\s\()/;
+    
+            movie['movie_versions'].forEach(version => {
+                const sessions = [];
 
-        movie['movie_versions'].forEach(element => {
+                version['sessions'].forEach(session => {
+                    sessions.push(session['id'])
+                });
 
-            movies.push(
-                {
-                    "id": element['film_HOPK'],
-                    "title": element['title'],
-                    "cinemas": element['id'],
-                    "isComingSoon": element['sessions'].length > 0? true : false
-
-                }
-            )
+                movies.push(
+                    {
+                        "id": movie['film_HO_code'],
+                        "title": version['title'].match(titleRe)[0],
+                        "cinemas": {
+                            "cinemaId": version['id'].split(idRe)[0],
+                            "dates": [{
+                                "date": element['date'],
+                                "sessions": sessions
+                            }]
+                        },
+                        "isComingSoon": version['sessions'].length > 0? true : false
+    
+                    }
+                )
+            });
         });
     });
 
