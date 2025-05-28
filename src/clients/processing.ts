@@ -67,21 +67,38 @@ async function fetchTheatresFromCinemark(){
 async function fetchMoviesFromCinemark(){
 
     const cinema_ids = [2305, 2302, 2306, 2308, 520, 2309, 2301, 2304, 2303, 2300, 517, 2307, 511, 512, 513, 519, 572, 548, 514, 570];
+    const movies = [];
 
     for(let i = 0; i < cinema_ids.length; i++){
         const rawMovies = await Cinemark.getBillboard(cinemark, cinema_ids[i]);
 
         const x = await Cinemark.parseMovies(rawMovies);
 
-        theatres.push(x)
+        movies.push(x)
     }
-
-    const reducedMovies = await reduceMovies(theatres.flat());
+    const reducedMovies = await reduceMovies(movies.flat());
     const reducedCinemas = await reduceCinemas(reducedMovies);
     const cinemasWithId = await addId(reducedCinemas);
     
-    console.log(inspect(cinemasWithId, {depth: 11, colors: true}))
-
+    await cinemasWithId.forEach(cinema => {
+        theatres.push(cinema);
+    })
 }
 
-fetchMoviesFromCinemark();
+async function fetchShowingsFromCinemark(){
+
+    const cinema_ids = [2305, 2302, 2306, 2308, 520, 2309, 2301, 2304, 2303, 2300, 517, 2307, 511, 512, 513, 519, 572, 548, 514, 570];
+    const showings = [];
+
+    for(let i = 0; i < cinema_ids.length; i++){
+        const rawMovies = await Cinemark.getBillboard(cinemark, cinema_ids[i]);
+
+        const x = await Cinemark.parseShowings(rawMovies);
+
+        showings.push(x)
+    }
+
+    console.log(inspect(showings, {depth:11, colors: true}))
+}
+
+fetchShowingsFromCinemark();
