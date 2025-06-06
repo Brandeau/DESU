@@ -2,7 +2,7 @@ import { Cineplanet } from "./cineplanet/Cineplanet.ts";
 import { Cinemark } from "./cinemark/Cinemark.ts";
 import { inspect } from "util";
 import { getCookies } from "./cineplanet/helpers/getCookies.ts";
-import { reduceMovies, reduceCinemas, addId } from "./helpers/parse.ts";
+import { reduceMovies, reduceCinemas, addId, reduceCineplanetShowings } from "./helpers/parse.ts";
 import fs from "node:fs";
 
 
@@ -21,9 +21,9 @@ async function fetchTheatresFromCineplanet(){
 
     for(let i = 0; i < rawTheatres['cinemas'].length; i++){
         
-        const x = await Cineplanet.parseTheatres(rawTheatres['cinemas'][i]);
+        const parsed = await Cineplanet.parseTheatres(rawTheatres['cinemas'][i]);
 
-        theatres.push(x);
+        theatres.push(parsed);
     }
 
 }
@@ -31,13 +31,21 @@ async function fetchTheatresFromCineplanet(){
 async function fetchMoviesFromCineplanet(){
 
     const rawMovies = await Cineplanet.getMovies(cookie, cineplanet, subKey);
+    const films = [];
 
     for(let i = 0; i < rawMovies['movies'].length; i++){
         
-        const x = await Cineplanet.parseMovies(rawMovies['movies'][i]);
+        const parsed = await Cineplanet.parseMovies(rawMovies['movies'][i]);
 
-        movies.push(x);
+        films.push(parsed);
     }
+
+    const reducedFilms = await reduceCineplanetShowings(films.flat());
+
+    //@ts-ignore
+    await reducedFilms.forEach(cinema => {
+        movies.push(cinema);
+    })
 }
 
 async function fetchShowingsFromCineplanet(){
@@ -48,13 +56,12 @@ async function fetchShowingsFromCineplanet(){
 
         showings.push(rawShowings['sessions'][i]);
     }
-
     
 }
 
 async function fetchTheatresFromCinemark(){
 
-    const rawTheatres: any = await Cinemark.getTheatres(cinemark);
+    const rawTheatres = await Cinemark.getTheatres(cinemark);
 
     for(let i = 0; i < rawTheatres.length; i++){
         
@@ -69,21 +76,22 @@ async function fetchTheatresFromCinemark(){
 async function fetchMoviesFromCinemark(){
 
     const cinema_ids = [2305, 2302, 2306, 2308, 520, 2309, 2301, 2304, 2303, 2300, 517, 2307, 511, 512, 513, 519, 572, 548, 514, 570];
+    const films = [];
 
     for(let i = 0; i < cinema_ids.length; i++){
         const rawMovies = await Cinemark.getBillboard(cinemark, cinema_ids[i]);
 
-        const x = await Cinemark.parseMovies(rawMovies);
+        const parsed = await Cinemark.parseMovies(rawMovies);
 
-        movies.push(x)
+        films.push(parsed)
     }
-/*     const reducedMovies = await reduceMovies(movies.flat());
+    const reducedMovies = await reduceMovies(films.flat());
     const reducedCinemas = await reduceCinemas(reducedMovies);
     const cinemasWithId = await addId(reducedCinemas);
     
     await cinemasWithId.forEach(cinema => {
-        theatres.push(cinema);
-    }) */
+        movies.push(cinema);
+    })
 }
 
 async function fetchShowingsFromCinemark(){
@@ -93,9 +101,9 @@ async function fetchShowingsFromCinemark(){
     for(let i = 0; i < cinema_ids.length; i++){
         const rawMovies = await Cinemark.getBillboard(cinemark, cinema_ids[i]);
 
-        const x = await Cinemark.parseShowings(rawMovies);
+        const parsed = await Cinemark.parseShowings(rawMovies);
 
-        showings.push(x)
+        showings.push(parsed)
     }
 }
 
