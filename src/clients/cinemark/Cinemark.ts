@@ -86,7 +86,7 @@ type CinemarkMoviesByDate = {
 
 type CinemarkBillboard = CinemarkMoviesByDate[]
 
-type ParsedMovie = {
+export type ParsedCinemarkMovie = {
     "id": string,
     "title": string,
     "showings": {
@@ -145,7 +145,7 @@ export class Cinemark {
         } as ParsedCinema
     };
 
-    static parseMovies(arr: CinemarkBillboard): ParsedMovie[]{
+    static parseMovies(arr: CinemarkBillboard): ParsedCinemarkMovie[]{
 
         const movies = [];
 
@@ -177,7 +177,7 @@ export class Cinemark {
             });
         });
 
-        return movies as ParsedMovie[]
+        return movies as ParsedCinemarkMovie[]
     }
 
     static async parseShowings(arr: CinemarkBillboard): Promise<ParsedShowing[]>{
