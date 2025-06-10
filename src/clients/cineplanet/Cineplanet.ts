@@ -85,6 +85,16 @@ type CineplanetSessions = {
     "sessions": CineplanetSession[]
 }
 
+export type ParsedCineplanetMovie = {
+    id: string;
+    title: string;
+    showings: {
+        "cinemaId": string;
+        "sessions": string[];
+    }[];
+    isComingSoon: boolean;
+}
+
 export class Cineplanet {
 
     static async getTheatres(cookie:string, url:string, subKey:string): Promise<CineplanetTheatres>{
@@ -139,7 +149,7 @@ export class Cineplanet {
         }
     }
 
-    static parseMovies(obj: CineplanetMovie){
+    static parseMovies(obj: CineplanetMovie): ParsedCineplanetMovie{
 
         const showings = [];
 
@@ -147,8 +157,8 @@ export class Cineplanet {
             cinema['dates']?.forEach(date => {
                 date['sessions']?.forEach(session => {
                     showings.push({
-                        session: session,
-                        cinema: cinema['cinemaId']
+                        sessions: session,
+                        cinemaId: cinema['cinemaId']
                     });
                 });
             });
@@ -158,7 +168,7 @@ export class Cineplanet {
             id: obj['id'],
             title: obj['title'],
             showings: showings,
-            available: !obj['isComingSoon']
-        }
+            isComingSoon: obj['isComingSoon']
+        } as ParsedCineplanetMovie;
     }
 }
