@@ -3,19 +3,24 @@ import fs from "node:fs";
 import { Cinemark } from "./cinemark/Cinemark.ts";
 import { Cineplanet, type ParsedCineplanetMovie } from "./cineplanet/Cineplanet.ts";
 import { getCookies } from "./cineplanet/helpers/getCookies.ts";
-import { processMovies, reduceCineplanetShowings } from "./helpers/parse.ts";
+import { getEnv, processMovies, reduceCineplanetShowings } from "./helpers/parse.ts";
 
-const subKey: string = process.env.SUBSCRIPTION_KEY;
-const cineplanet: string = process.env.CINEPLANET_URL;
-const cinemark: string = process.env.CINEMARK_URL;
-const cookie: string = await getCookies(cineplanet);
+const subKey = getEnv("SUBSCRIPTION_KEY");
+const cineplanet = getEnv("CINEPLANET_URL");
+const cinemark = getEnv("CINEMARK_URL");
+const cookie = await getCookies(cineplanet);
 
 async function fetchTheatresFromCineplanet() {
   const rawTheatres = await Cineplanet.getTheatres(cookie, cineplanet, subKey);
-  const theatres = [];
+  const theatres: {
+    id: string;
+    name: string;
+    city: string;
+    chain: number;
+  }[] = [];
 
   for (let i = 0; i < rawTheatres["cinemas"].length; i++) {
-    const parsed = await Cineplanet.parseTheatres(rawTheatres["cinemas"][i]);
+    const parsed = Cineplanet.parseTheatres(rawTheatres["cinemas"][i]);
 
     theatres.push(parsed);
   }
