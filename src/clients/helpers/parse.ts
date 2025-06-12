@@ -134,6 +134,12 @@ export async function processMovies(arr: ParsedCinemarkMovie[]): Promise<Movie[]
   return cinemasWithId;
 }
 
-export function getEnv(key: string, fallback?: string): string | undefined {
-  return process.env[key] ?? fallback;
+export function getEnv(key: string, fallback?: string): string {
+  const env = process.env[key] ?? fallback;
+
+  if (env === undefined) {
+    throw Error("Env not found");
+  }
+
+  return env;
 }

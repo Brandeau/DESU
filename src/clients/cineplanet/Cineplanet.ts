@@ -73,7 +73,7 @@ type CineplanetBillboard = {
   movies: CineplanetMovie[];
 };
 
-type CineplanetSession = {
+export type CineplanetSession = {
   id: string;
   showtime: string;
   formats: string[];
@@ -156,14 +156,17 @@ export class Cineplanet {
     };
   }
 
-  static parseMovies(obj: CineplanetMovie): ParsedCineplanetMovie {
-    const showings = [];
+  static parseMovies(obj: CineplanetMovie) {
+    const showings: {
+      sessions: string[];
+      cinemaId: string;
+    }[] = [];
 
     obj["cinemas"].forEach((cinema) => {
       cinema["dates"]?.forEach((date) => {
         date["sessions"]?.forEach((session) => {
           showings.push({
-            sessions: session,
+            sessions: [session],
             cinemaId: cinema["cinemaId"],
           });
         });

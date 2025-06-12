@@ -17,7 +17,7 @@ type CinemarkTheatres = {
   cinemas: CinemarkCinema[];
 }[];
 
-type ParsedCinema = {
+export type ParsedCinema = {
   id: string;
   name: string;
   city: string;
@@ -96,7 +96,7 @@ export type ParsedCinemarkMovie = {
   isComingSoon: boolean;
 };
 
-type ParsedShowing = {
+export type ParsedShowing = {
   id: string;
   showtime: string;
   formats: string[];
@@ -140,7 +140,7 @@ export class Cinemark {
   }
 
   static parseMovies(arr: CinemarkBillboard): ParsedCinemarkMovie[] {
-    const movies = [];
+    const movies: ParsedCinemarkMovie[] = [];
 
     arr.forEach((element) => {
       element["movies"].forEach((movie) => {
@@ -148,15 +148,18 @@ export class Cinemark {
         const titleRe = /^.+(?=\s\()/;
 
         movie["movie_versions"].forEach((version) => {
-          const sessions = [];
+          const sessions: string[] = [];
 
           version["sessions"].forEach((session) => {
             sessions.push(session["id"]);
           });
 
+          const match = version["title"].match(titleRe);
+          const title = match ? match[0] : "";
+
           movies.push({
             id: movie["film_HO_code"],
-            title: version["title"].match(titleRe)[0],
+            title: title,
             showings: {
               cinemaId: version["id"].split(idRe)[0],
               sessions: sessions,
@@ -171,18 +174,17 @@ export class Cinemark {
   }
 
   static async parseShowings(arr: CinemarkBillboard): Promise<ParsedShowing[]> {
-    const showings = [];
+    const showings: ParsedShowing[] = [];
 
     arr.forEach((element) => {
       element["movies"].forEach((movie) => {
         movie["movie_versions"].forEach((version) => {
           version["sessions"].forEach((session) => {
             const re = /(?<=\().*(?=\))/;
-            const formats =
-              version["title"].match(re) !== null
-                ? version["title"].match(re)[0].split(" ")
-                : [];
-            const lang = formats.pop();
+            const match = version["title"].match(re);
+            const formats = match ? match[0].split(" ") : [];
+            const firstElem = formats.pop();
+            const lang = firstElem === undefined ? "" : firstElem;
 
             showings.push({
               id: session["id"],
