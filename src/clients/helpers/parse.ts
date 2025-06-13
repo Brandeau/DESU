@@ -2,6 +2,7 @@ import { type ParsedCinemarkMovie } from "../cinemark/Cinemark.ts";
 import { type ParsedCineplanetMovie } from "../cineplanet/Cineplanet.ts";
 
 type ReducedMovie = {
+  source_id: string;
   title: string;
   showings: {
     cinemaId: string;
@@ -31,7 +32,7 @@ export async function reduceMovies(
       existingMovie.showings.push(currentMovie.showings);
     } else {
       accumulator.push({
-        //"id": currentMovie.id,
+        source_id: currentMovie.id,
         title: currentMovie.title /*.match(re)[0]*/,
         showings: [currentMovie.showings],
         isComingSoon: currentMovie["isComingSoon"],
@@ -73,7 +74,7 @@ export async function reduceCinemas(array: ReducedMovie[]): Promise<ReducedMovie
     // Return a new movie object with the collapsed cinemas array
     return {
       ...movie, // Spread the original movie properties
-      cinemas: reducedShowings, // Replace the original cinemas array with the collapsed one
+      showings: reducedShowings, // Replace the original cinemas array with the collapsed one
     } as ReducedMovie;
   });
 
@@ -142,4 +143,8 @@ export function getEnv(key: string, fallback?: string): string {
   }
 
   return env;
+}
+
+export function normalizeTitle(title) {
+  return title.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
