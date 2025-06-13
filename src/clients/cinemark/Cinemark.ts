@@ -1,3 +1,5 @@
+import { normalizeTitle } from "../helpers/parse.ts";
+
 type CinemarkCinema = {
   ID: string;
   Name: string;
@@ -145,7 +147,7 @@ export class Cinemark {
     arr.forEach((element) => {
       element["movies"].forEach((movie) => {
         const idRe = /-[a-zA-Z]+[0-9]+/;
-        const titleRe = /^.+(?=\s\()/;
+        //const titleRe = /^.+(?=\s\()/;
 
         movie["movie_versions"].forEach((version) => {
           const sessions: string[] = [];
@@ -154,12 +156,13 @@ export class Cinemark {
             sessions.push(session["id"]);
           });
 
-          const match = version["title"].match(titleRe);
-          const title = match ? match[0] : "";
+          //const match = version["title"].match(titleRe);
+          const title = movie["synopsis_alt"];
+          const normalizedTitle = normalizeTitle(title);
 
           movies.push({
             id: movie["film_HO_code"],
-            title: title,
+            title: normalizedTitle,
             showings: {
               cinemaId: version["id"].split(idRe)[0],
               sessions: sessions,
