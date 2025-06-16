@@ -20,7 +20,7 @@ function fetchMovies(): Movie[] {
 function filterMovies(title: string): Movie[] {
   const movies = fetchMovies();
   try {
-    const movie = movies.filter((movie) => movie.title === title);
+    const movie = movies.filter((movie) => movie.title.includes(title));
 
     return movie;
   } catch (error) {
@@ -38,4 +38,4 @@ function showShowings(title: string): Showings {
   return showings.flat();
 }
 
-console.log(showShowings("BAILARINA"));
+console.log(showShowings("Bailar"));
