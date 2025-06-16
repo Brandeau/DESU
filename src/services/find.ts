@@ -1,21 +1,20 @@
-import { type Movie } from "../clients/cinemark/fetchData.ts";
+import fs from "node:fs";
+import path from "node:path";
 
-async function fetchMovies(): Promise<Movie[]> {
+import { type ReducedMovie } from "../clients/helpers/parse.ts";
+
+function fetchMovies() {
   try {
-    const response = await fetch("../../var/data/movies.json");
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    const data = await response.json();
+    const data = fs.readFileSync("./var/data/movies.json", "utf-8");
 
-    return data as Movie[];
+    return JSON.parse(data);
   } catch (error) {
     throw Error("Error loading movies", error);
   }
 }
 
-async function filterMovies(title: string): Promise<Movie[]> {
-  const movies = await fetchMovies();
+function filterMovies(title: string) {
+  const movies = fetchMovies();
   try {
     const movie = movies.filter((movie) => movie.title === title);
 
@@ -24,5 +23,3 @@ async function filterMovies(title: string): Promise<Movie[]> {
     throw Error("No movies with that name", error);
   }
 }
-
-console.log(filterMovies("BAILARINA"));
