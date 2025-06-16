@@ -20,7 +20,9 @@ function fetchMovies(): Movie[] {
 function filterMovies(title: string): Movie[] {
   const movies = fetchMovies();
   try {
-    const movie = movies.filter((movie) => movie.title.includes(title));
+    const movie = movies.filter((movie) =>
+      movie.title.toLowerCase().includes(title.toLowerCase()),
+    );
 
     return movie;
   } catch (error) {
