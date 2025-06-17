@@ -2,7 +2,6 @@ import fs from "node:fs";
 
 import {
   Cinemark,
-  type ParsedCinema,
   type ParsedCinemarkMovie,
   type ParsedShowing,
 } from "./cinemark/Cinemark.ts";
@@ -13,6 +12,7 @@ import {
 } from "./cineplanet/Cineplanet.ts";
 import { getCookies } from "./cineplanet/helpers/getCookies.ts";
 import { getEnv, processMovies, reduceCineplanetShowings } from "./helpers/parse.ts";
+import { ParsedCinema } from "./types.ts";
 
 const subKey = getEnv("SUBSCRIPTION_KEY");
 const cineplanet = getEnv("CINEPLANET_URL");
@@ -125,7 +125,7 @@ async function handler() {
 
   const theatres = [...cineplanetTheatres, ...cinemarkTheatres];
 
-  await fs.writeFile(
+  fs.writeFile(
     "var/data/theatres.json",
     JSON.stringify(theatres, null, 2),
     "utf8",
@@ -140,22 +140,17 @@ async function handler() {
 
   const movies = [...cineplanetMovies, ...cinemarkMovies];
 
-  await fs.writeFile(
-    "var/data/movies.json",
-    JSON.stringify(movies, null, 2),
-    "utf8",
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-        return;
-      }
-      console.log("File written successfully!");
-    },
-  );
+  fs.writeFile("var/data/movies.json", JSON.stringify(movies, null, 2), "utf8", (err) => {
+    if (err) {
+      console.error("Error writing file:", err);
+      return;
+    }
+    console.log("File written successfully!");
+  });
 
   const showings = [...cineplanetShowings, ...cinemarkShowings];
 
-  await fs.writeFile(
+  fs.writeFile(
     "var/data/showings.json",
     JSON.stringify(showings, null, 2),
     "utf8",

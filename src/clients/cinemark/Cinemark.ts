@@ -1,4 +1,5 @@
 import { normalizeTitle } from "../helpers/parse.ts";
+import { ParsedCinema } from "../types.ts";
 
 type CinemarkCinema = {
   ID: string;
@@ -18,13 +19,6 @@ type CinemarkTheatres = {
   city: string;
   cinemas: CinemarkCinema[];
 }[];
-
-export type ParsedCinema = {
-  id: string;
-  name: string;
-  city: string;
-  chain: number;
-};
 
 type CinemarkReleases = {
   value: {
@@ -89,7 +83,7 @@ type CinemarkMoviesByDate = {
 type CinemarkBillboard = CinemarkMoviesByDate[];
 
 export type ParsedCinemarkMovie = {
-  id: string;
+  source_id: string;
   title: string;
   showings: {
     cinemaId: string;
@@ -161,7 +155,7 @@ export class Cinemark {
           const normalizedTitle = normalizeTitle(title);
 
           movies.push({
-            id: movie["film_HO_code"],
+            source_id: movie["film_HO_code"],
             title: normalizedTitle,
             showings: {
               cinemaId: version["id"].split(idRe)[0],

@@ -1,4 +1,5 @@
 import { normalizeTitle } from "../helpers/parse.ts";
+import { ParsedCinema } from "../types.ts";
 
 type CineplanetTheatre = {
   ID: string;
@@ -149,7 +150,7 @@ export class Cineplanet {
     return showings;
   }
 
-  static parseTheatres(obj: CineplanetTheatre) {
+  static parseTheatres(obj: CineplanetTheatre): ParsedCinema {
     return {
       id: obj["ID"],
       name: obj["name"],
@@ -158,7 +159,7 @@ export class Cineplanet {
     };
   }
 
-  static parseMovies(obj: CineplanetMovie) {
+  static parseMovies(obj: CineplanetMovie): ParsedCineplanetMovie {
     const showings: {
       sessions: string[];
       cinemaId: string;

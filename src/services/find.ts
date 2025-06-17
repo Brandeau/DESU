@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-import { type Movie } from "../clients/helpers/parse.ts";
+import { Movie } from "../clients/types.ts";
 
 type Showings = {
   cinemaId: string;

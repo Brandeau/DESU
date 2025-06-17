@@ -1,25 +1,6 @@
 import { type ParsedCinemarkMovie } from "../cinemark/Cinemark.ts";
 import { type ParsedCineplanetMovie } from "../cineplanet/Cineplanet.ts";
-
-type ReducedMovie = {
-  source_id: string;
-  title: string;
-  showings: {
-    cinemaId: string;
-    sessions: string[];
-  }[];
-  isComingSoon: boolean;
-};
-
-type Movie = {
-  id: number;
-  title: string;
-  showings: {
-    cinemaId: string;
-    sessions: string[];
-  }[];
-  isComingSoon: boolean;
-};
+import { type Movie, type ReducedMovie } from "../types.ts";
 
 export async function reduceMovies(
   array: ParsedCinemarkMovie[],
@@ -32,7 +13,7 @@ export async function reduceMovies(
       existingMovie.showings.push(currentMovie.showings);
     } else {
       accumulator.push({
-        source_id: currentMovie.id,
+        source_id: currentMovie.source_id,
         title: currentMovie.title /*.match(re)[0]*/,
         showings: [currentMovie.showings],
         isComingSoon: currentMovie["isComingSoon"],
@@ -127,12 +108,12 @@ export async function addId(array: ReducedMovie[]): Promise<Movie[]> {
   return newArr;
 }
 
-export async function processMovies(arr: ParsedCinemarkMovie[]): Promise<Movie[]> {
+export async function processMovies(arr: ParsedCinemarkMovie[]): Promise<ReducedMovie[]> {
   const reducedMovies = await reduceMovies(arr);
   const reducedCinemas = await reduceCinemas(reducedMovies);
-  const cinemasWithId = await addId(reducedCinemas);
+  //const cinemasWithId = await addId(reducedCinemas);
 
-  return cinemasWithId;
+  return reducedCinemas;
 }
 
 export function getEnv(key: string, fallback?: string): string {
