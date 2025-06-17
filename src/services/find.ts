@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-import { Movie } from "../clients/types.ts";
+import { type Movie, type ParsedCinema } from "../clients/types.ts";
 
 type Showings = {
   cinemaId: string;
@@ -30,7 +30,7 @@ function filterMovies(title: string): Movie[] {
   }
 }
 
-function showShowings(title: string): Showings {
+function getShowings(title: string): Showings {
   const movies = filterMovies(title);
 
   const showings: Showings[] = [];
@@ -40,4 +40,14 @@ function showShowings(title: string): Showings {
   return showings.flat();
 }
 
-console.log(showShowings("Bailar"));
+function fetchTheatres(): ParsedCinema[] {
+  try {
+    const data = fs.readFileSync("./var/data/theatres.json", "utf-8");
+
+    return JSON.parse(data);
+  } catch (error) {
+    throw Error("Error loading theatres", error);
+  }
+}
+
+console.log(fetchTheatres());
