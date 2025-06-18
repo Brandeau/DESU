@@ -45,7 +45,7 @@ async function fetchTheatres(): Promise<ParsedCinema[]> {
   }
 }
 
-async function matchIdToName(id: string): Promise<string> {
+async function getCinemaNameById(id: string): Promise<string> {
   const theatres = await fetchTheatres();
 
   const match = theatres.find((theatre) => theatre.id === id);
@@ -55,6 +55,15 @@ async function matchIdToName(id: string): Promise<string> {
   }
 
   return match.name;
+}
+
+async function replaceCinemaIdWithName(showing: Showing) {
+  const theatre = await getCinemaNameById(showing.cinemaId);
+
+  return {
+    cinema: theatre,
+    sessions: showing.sessions,
+  };
 }
 
 console.log(await filterMovies("bailar"));
