@@ -25,3 +25,8 @@ export type Movie = {
   }[];
   isComingSoon: boolean;
 };
+
+export type Showing = {
+  cinemaId: string;
+  sessions: string[];
+};
