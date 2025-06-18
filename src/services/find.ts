@@ -1,13 +1,8 @@
 import fs from "node:fs";
 
-import { type Movie, type ParsedCinema } from "../clients/types.ts";
+import { type Movie, type ParsedCinema, type Showing } from "../clients/types.ts";
 
-type Showings = {
-  cinemaId: string;
-  sessions: string[];
-}[];
-
-function fetchMovies(): Movie[] {
+async function fetchMovies(): Promise<Movie[]> {
   try {
     const data = fs.readFileSync("./var/data/movies.json", "utf-8");
 
@@ -17,8 +12,8 @@ function fetchMovies(): Movie[] {
   }
 }
 
-function filterMovies(title: string): Movie[] {
-  const movies = fetchMovies();
+async function filterMovies(title: string): Promise<Movie[]> {
+  const movies = await fetchMovies();
   try {
     const movie = movies.filter((movie) =>
       movie.title.toLowerCase().includes(title.toLowerCase()),
@@ -30,17 +25,17 @@ function filterMovies(title: string): Movie[] {
   }
 }
 
-function getShowings(title: string): Showings {
-  const movies = filterMovies(title);
+async function fetchShowings(title: string): Promise<Showing[]> {
+  const movies = await filterMovies(title);
 
-  const showings: Showings[] = [];
+  const showings: Showing[][] = [];
 
   movies.forEach((movie) => showings.push(movie.showings));
 
   return showings.flat();
 }
 
-function fetchTheatres(): ParsedCinema[] {
+async function fetchTheatres(): Promise<ParsedCinema[]> {
   try {
     const data = fs.readFileSync("./var/data/theatres.json", "utf-8");
 
@@ -50,4 +45,16 @@ function fetchTheatres(): ParsedCinema[] {
   }
 }
 
-console.log(fetchTheatres());
+async function matchIdToName(id: string): Promise<string> {
+  const theatres = await fetchTheatres();
+
+  const match = theatres.find((theatre) => theatre.id === id);
+
+  if (!match) {
+    throw Error("Theatre not found");
+  }
+
+  return match.name;
+}
+
+console.log(await filterMovies("bailar"));
