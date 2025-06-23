@@ -1,5 +1,5 @@
 import { normalizeTitle } from "../helpers/parse.ts";
-import { ParsedCinema } from "../types.ts";
+import { type ParsedCinema } from "../types.ts";
 
 type CinemarkCinema = {
   ID: string;
