@@ -84,6 +84,16 @@ function replaceCinemaIdWithName(showing: Showing) {
   };
 }
 
+function expandMovies(movies: Movie[]) {
+  const a = movies.forEach((movie) => {
+    movie.showings.forEach((showing) => {
+      replaceCinemaIdWithName(showing);
+    });
+  });
+
+  return a;
+}
+
 /* const bailarina = [
   {
     id: 1,
