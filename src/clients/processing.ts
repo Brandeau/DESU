@@ -11,8 +11,13 @@ import {
   type ParsedCineplanetMovie,
 } from "./cineplanet/Cineplanet.ts";
 import { getCookies } from "./cineplanet/helpers/getCookies.ts";
-import { getEnv, processMovies, reduceCineplanetShowings } from "./helpers/parse.ts";
-import { ParsedCinema } from "./types.ts";
+import {
+  addId,
+  getEnv,
+  processMovies,
+  reduceCineplanetShowings,
+} from "./helpers/parse.ts";
+import { type ParsedCinema } from "./types.ts";
 
 const subKey = getEnv("SUBSCRIPTION_KEY");
 const cineplanet = getEnv("CINEPLANET_URL");
@@ -139,14 +144,20 @@ async function handler() {
   );
 
   const movies = [...cineplanetMovies, ...cinemarkMovies];
+  const moviesWithId = await addId(movies);
 
-  fs.writeFile("var/data/movies.json", JSON.stringify(movies, null, 2), "utf8", (err) => {
-    if (err) {
-      console.error("Error writing file:", err);
-      return;
-    }
-    console.log("File written successfully!");
-  });
+  fs.writeFile(
+    "var/data/movies.json",
+    JSON.stringify(moviesWithId, null, 2),
+    "utf8",
+    (err) => {
+      if (err) {
+        console.error("Error writing file:", err);
+        return;
+      }
+      console.log("File written successfully!");
+    },
+  );
 
   const showings = [...cineplanetShowings, ...cinemarkShowings];
 
