@@ -58,6 +58,20 @@ function getCinemaNameById(id: string): string {
   return match.name;
 }
 
+function getShowingById(showingId: string) {
+  const showings = fetchShowings();
+
+  const match = showings.find((showing) => showing.id === showingId);
+
+  if (!match) {
+    throw Error("Showings not found");
+  }
+
+  const { id, ...rest } = match;
+
+  return rest;
+}
+
 /* const bailarina = [
   {
     id: 1,
