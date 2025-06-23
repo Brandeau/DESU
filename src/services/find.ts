@@ -1,8 +1,10 @@
 import fs from "node:fs";
+import { inspect } from "node:util";
 
+import { ParsedShowing } from "../clients/cinemark/Cinemark.ts";
 import { type Movie, type ParsedCinema, type Showing } from "../clients/types.ts";
 
-async function fetchMovies(): Promise<Movie[]> {
+function fetchMovies(): Movie[] {
   try {
     const data = fs.readFileSync("./var/data/movies.json", "utf-8");
 
@@ -12,8 +14,8 @@ async function fetchMovies(): Promise<Movie[]> {
   }
 }
 
-async function filterMovies(title: string): Promise<Movie[]> {
-  const movies = await fetchMovies();
+function filterMovies(title: string) {
+  const movies = fetchMovies();
   try {
     const movie = movies.filter((movie) =>
       movie.title.toLowerCase().includes(title.toLowerCase()),
@@ -25,17 +27,16 @@ async function filterMovies(title: string): Promise<Movie[]> {
   }
 }
 
-async function fetchShowings(title: string): Promise<Showing[]> {
-  const movies = await filterMovies(title);
+function fetchShowings(): ParsedShowing[] {
+  try {
+    const data = fs.readFileSync("./var/data/showings.json", "utf-8");
 
-  const showings: Showing[][] = [];
-
-  movies.forEach((movie) => showings.push(movie.showings));
-
-  return showings.flat();
+    return JSON.parse(data);
+  } catch (error) {
+    throw Error("Error loading showings", error);
+  }
 }
-
-async function fetchTheatres(): Promise<ParsedCinema[]> {
+function fetchTheatres(): ParsedCinema[] {
   try {
     const data = fs.readFileSync("./var/data/theatres.json", "utf-8");
 
@@ -45,8 +46,8 @@ async function fetchTheatres(): Promise<ParsedCinema[]> {
   }
 }
 
-async function getCinemaNameById(id: string): Promise<string> {
-  const theatres = await fetchTheatres();
+function getCinemaNameById(id: string): string {
+  const theatres = fetchTheatres();
 
   const match = theatres.find((theatre) => theatre.id === id);
 
@@ -57,13 +58,61 @@ async function getCinemaNameById(id: string): Promise<string> {
   return match.name;
 }
 
-async function replaceCinemaIdWithName(showing: Showing) {
-  const theatre = await getCinemaNameById(showing.cinemaId);
+/* const bailarina = [
+  {
+    id: 1,
+    source_id: "HO00001486",
+    title: "BAILARINA",
+    showings: [
+      {
+        cinemaId: "0000000004",
+        sessions: ["0000000004-121304", "0000000004-121217", "0000000004-121278"],
+      },
+      {
+        cinemaId: "0000000007",
+        sessions: [
+          "0000000007-126755",
+          "0000000007-126656",
+          "0000000007-126752",
+          "0000000007-126754",
+        ],
+      },
+    ],
+    isComingSoon: false,
+  },
+  {
+    id: 38,
+    source_id: "368593",
+    title: "BAILARINA",
+    showings: [
+      {
+        cinemaId: "511",
+        sessions: [
+          "249391",
+          "249405",
+          "249225",
+          "249395",
+          "249415",
+          "249274",
+          "249399",
+          "249414",
+          "249322",
+        ],
+      },
+      {
+        cinemaId: "512",
+        sessions: ["256013", "256014", "256068", "256069", "256123", "256124"],
+      },
+      { cinemaId: "548", sessions: ["193802", "193845", "193888"] },
+    ],
+    isComingSoon: true,
+  },
+]; */
 
-  return {
-    cinema: theatre,
-    sessions: showing.sessions,
-  };
-}
-
-console.log(await filterMovies("bailar"));
+/* console.log(inspect(expandMovies(bailarina), { depth: 11, colors: true }));
+console.log(
+  replaceCinemaIdWithName({
+    cinemaId: "0000000004",
+    sessions: ["0000000004-121304", "0000000004-121217", "0000000004-121278"],
+  }),
+); */
