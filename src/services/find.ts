@@ -72,6 +72,18 @@ function getShowingById(showingId: string) {
   return rest;
 }
 
+function replaceCinemaIdWithName(showing: Showing) {
+  const theatre = getCinemaNameById(showing.cinemaId);
+
+  const { cinemaId, ...rest } = showing;
+  const sessions = rest.sessions.map((e) => getShowingById(e));
+
+  return {
+    cinema: theatre,
+    showings: sessions,
+  };
+}
+
 /* const bailarina = [
   {
     id: 1,
