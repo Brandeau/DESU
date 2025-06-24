@@ -1,8 +1,13 @@
 import fs from "node:fs";
 import { inspect } from "node:util";
 
-import { ParsedShowing } from "../clients/cinemark/Cinemark.ts";
-import { type Movie, type ParsedCinema, type Showing } from "../clients/types.ts";
+import { type ParsedShowing } from "../clients/cinemark/Cinemark.ts";
+import {
+  type Movie,
+  type MovieResult,
+  type ParsedCinema,
+  type Showing,
+} from "../clients/types.ts";
 
 function fetchMovies(): Movie[] {
   try {
@@ -64,7 +69,7 @@ function getShowingById(showingId: string) {
   const match = showings.find((showing) => showing.id === showingId);
 
   if (!match) {
-    throw Error("Showings not found");
+    return "No showings available";
   }
 
   const { id, ...rest } = match;
@@ -80,75 +85,24 @@ function replaceCinemaIdWithName(showing: Showing) {
 
   return {
     cinema: theatre,
-    showings: sessions,
+    sessions: sessions,
   };
 }
 
-function expandMovies(movies: Movie[]) {
-  const a = movies.forEach((movie) => {
-    movie.showings.forEach((showing) => {
-      replaceCinemaIdWithName(showing);
-    });
+function replaceAllShowings(movies: Movie[]) {
+  const arr: MovieResult[][] = [];
+
+  movies.forEach((movie) => {
+    const mappedShowings = movie.showings.map((showing) =>
+      replaceCinemaIdWithName(showing),
+    );
+
+    arr.push(mappedShowings);
   });
 
-  return a;
+  return arr;
 }
 
-/* const bailarina = [
-  {
-    id: 1,
-    source_id: "HO00001486",
-    title: "BAILARINA",
-    showings: [
-      {
-        cinemaId: "0000000004",
-        sessions: ["0000000004-121304", "0000000004-121217", "0000000004-121278"],
-      },
-      {
-        cinemaId: "0000000007",
-        sessions: [
-          "0000000007-126755",
-          "0000000007-126656",
-          "0000000007-126752",
-          "0000000007-126754",
-        ],
-      },
-    ],
-    isComingSoon: false,
-  },
-  {
-    id: 38,
-    source_id: "368593",
-    title: "BAILARINA",
-    showings: [
-      {
-        cinemaId: "511",
-        sessions: [
-          "249391",
-          "249405",
-          "249225",
-          "249395",
-          "249415",
-          "249274",
-          "249399",
-          "249414",
-          "249322",
-        ],
-      },
-      {
-        cinemaId: "512",
-        sessions: ["256013", "256014", "256068", "256069", "256123", "256124"],
-      },
-      { cinemaId: "548", sessions: ["193802", "193845", "193888"] },
-    ],
-    isComingSoon: true,
-  },
-]; */
+const movies = filterMovies("destino");
 
-/* console.log(inspect(expandMovies(bailarina), { depth: 11, colors: true }));
-console.log(
-  replaceCinemaIdWithName({
-    cinemaId: "0000000004",
-    sessions: ["0000000004-121304", "0000000004-121217", "0000000004-121278"],
-  }),
-); */
+console.log(inspect(replaceAllShowings(movies), { depth: 11, colors: true }));
