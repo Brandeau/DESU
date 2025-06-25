@@ -30,3 +30,12 @@ export type Showing = {
   cinemaId: string;
   sessions: string[];
 };
+
+export type MovieResult = {
+  cinema: string;
+  sessions: {
+    showtime: string;
+    formats: string[];
+    languages: string[];
+  }[];
+};
