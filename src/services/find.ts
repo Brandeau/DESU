@@ -103,6 +103,6 @@ function replaceAllShowings(movies: Movie[]) {
   return arr;
 }
 
-const movies = filterMovies("destino");
+const movies = filterMovies("superman");
 
 console.log(inspect(replaceAllShowings(movies), { depth: 11, colors: true }));
