@@ -33,9 +33,11 @@ export type Showing = {
 
 export type MovieResult = {
   cinema: string;
-  sessions: {
-    showtime: string;
-    formats: string[];
-    languages: string[];
-  }[];
+  sessions: Sessions;
 };
+
+export type Sessions = ({
+  showtime: string;
+  formats: string[];
+  languages: string[];
+} | null)[];
