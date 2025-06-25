@@ -6,6 +6,7 @@ import {
   type Movie,
   type MovieResult,
   type ParsedCinema,
+  type Sessions,
   type Showing,
 } from "../clients/types.ts";
 
@@ -19,14 +20,16 @@ function fetchMovies(): Movie[] {
   }
 }
 
-function filterMovies(title: string) {
+function searchMovieByTitle(title: string) {
   const movies = fetchMovies();
   try {
     const movie = movies.filter((movie) =>
       movie.title.toLowerCase().includes(title.toLowerCase()),
     );
 
-    return movie;
+    const fullMovie = replaceAllShowings(movie);
+
+    return fullMovie;
   } catch (error) {
     throw Error("No movies with that name", error);
   }
@@ -69,7 +72,7 @@ function getShowingById(showingId: string) {
   const match = showings.find((showing) => showing.id === showingId);
 
   if (!match) {
-    return "No showings available";
+    return null;
   }
 
   const { id, ...rest } = match;
@@ -81,7 +84,7 @@ function replaceCinemaIdWithName(showing: Showing) {
   const theatre = getCinemaNameById(showing.cinemaId);
 
   const { cinemaId, ...rest } = showing;
-  const sessions = rest.sessions.map((e) => getShowingById(e));
+  const sessions: Sessions = rest.sessions.map((e) => getShowingById(e));
 
   return {
     cinema: theatre,
@@ -103,6 +106,4 @@ function replaceAllShowings(movies: Movie[]) {
   return arr;
 }
 
-const movies = filterMovies("superman");
-
-console.log(inspect(replaceAllShowings(movies), { depth: 11, colors: true }));
+console.log(inspect(searchMovieByTitle("superman"), { depth: 11, colors: true }));
