@@ -1,4 +1,6 @@
-import { normalizeTitle } from "../helpers/parse.ts";
+import { CINEMA_CHAIN } from "../../constants.ts";
+import { normalizeTitle } from "../helpers.ts";
+import { getEnv } from "../helpers.ts";
 import { type ParsedCinema } from "../types.ts";
 
 type CinemarkCinema = {
@@ -100,26 +102,30 @@ export type ParsedShowing = {
 };
 
 export class Cinemark {
-  static async getTheatres(url: string): Promise<CinemarkTheatres> {
-    const response = await fetch(`${url}/api/vista/data/theatres`);
+  static url: string = getEnv("CINEMARK_URL");
+
+  static async getTheatres(): Promise<CinemarkTheatres> {
+    const response = await fetch(`${Cinemark.url}/api/vista/data/theatres`);
 
     const data = (await response.json()) as CinemarkTheatres;
 
     return data;
   }
 
-  static async getReleases(url: string, date: Date): Promise<CinemarkReleases> {
+  static async getReleases(date: Date): Promise<CinemarkReleases> {
     const now = date.toISOString().slice(0, 10);
 
-    const response = await fetch(`${url}/api/vista/data/releases?date=${now}`);
+    const response = await fetch(`${Cinemark.url}/api/vista/data/releases?date=${now}`);
 
     const data = (await response.json()) as CinemarkReleases;
 
     return data;
   }
 
-  static async getBillboard(url: string, cinemaId: number): Promise<CinemarkBillboard> {
-    const response = await fetch(`${url}/api/vista/data/billboard?cinema_id=${cinemaId}`);
+  static async getBillboard(cinemaId: number): Promise<CinemarkBillboard> {
+    const response = await fetch(
+      `${Cinemark.url}/api/vista/data/billboard?cinema_id=${cinemaId}`,
+    );
 
     const data = (await response.json()) as CinemarkBillboard;
 
@@ -131,7 +137,7 @@ export class Cinemark {
       id: obj["ID"],
       name: obj["Name"],
       city: obj["City"],
-      chain: 2,
+      chain: CINEMA_CHAIN.CINEMARK,
     } as ParsedCinema;
   }
 

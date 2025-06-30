@@ -1,6 +1,22 @@
-.DS_Store
+# 💬 Automatically generated
+coverage
+DS_Store
 node_modules
-.tool-versions
-.env
-temp
+package-lock.json
+
+# 💬 Do not ignore
+!.vscode/**
+!bin/**
+
+# 💬 Logs
+*.log
+logs
+npm-debug.log*
+
+# 💬 Temporary
+*.tmp
+tmp.*
+tmp/
+var/tmp
+
 var

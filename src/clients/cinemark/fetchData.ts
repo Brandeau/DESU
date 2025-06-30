@@ -1,119 +1,113 @@
 export interface CinemaRoot {
-  city: string
-  cinemas: Cinema[]
-};
+  city: string;
+  cinemas: Cinema[];
+}
 export interface Cinema {
-  ID: string
-  Name: string
-  PhoneNumber: string
-  City: string
-  Address1: string
-  Address2: string
-  LoyaltyCode: string
-  Latitude: string
-  Longitude: string
-  Description: string
-  Slug: string
-};
-
+  ID: string;
+  Name: string;
+  PhoneNumber: string;
+  City: string;
+  Address1: string;
+  Address2: string;
+  LoyaltyCode: string;
+  Latitude: string;
+  Longitude: string;
+  Description: string;
+  Slug: string;
+}
 
 export interface ReleasesRoot {
-    value: Releases[]
-  }
-  export interface Releases {
-    ID: string
-    Title: string
-    Synopsis: string
-    SynopsisAlt: string
-    RunTime: number
-    OpeningDate: string
-    TrailerUrl: string
-    CorporateFilmId: string
-    HOFilmCode: string
-    Rating: string
-    GenreId: string
-    GenreId2?: string
-    GenreId3: any
-    genre: string
-    genre2?: string
-    genre3: any
-  }
-  export interface MovieRoot {
-    date: string
-    movies: Movie[]
-  }
-  
-  export interface Movie {
-    title: string
-    trailer_url: string
-    graphic_url: string
-    runtime: string
-    rating: string
-    film_HO_code: string
-    corporate_film_id: string
-    synopsis: string
-    synopsis_alt: string
-    opening_date: string
-    genre: string
-    genre2?: string
-    genre3?: string
-    cast: Cast[]
-    movie_versions: MovieVersion[]
-  }
-  
-  export interface Cast {
-    ID: string
-    FirstName: string
-    LastName: string
-    PersonType: string
-  }
-  
-  export interface MovieVersion {
-    film_HOPK: string
-    title: string
-    film_HO_code: string
-    id: string
-    sessions: Session[]
-  }
-  
-  export interface Session {
-    id: string
-    showtime: string
-    day: string
-    hour: string
-    seats_available: number
-  }
-  
-  
+  value: Releases[];
+}
+export interface Releases {
+  ID: string;
+  Title: string;
+  Synopsis: string;
+  SynopsisAlt: string;
+  RunTime: number;
+  OpeningDate: string;
+  TrailerUrl: string;
+  CorporateFilmId: string;
+  HOFilmCode: string;
+  Rating: string;
+  GenreId: string;
+  GenreId2?: string;
+  GenreId3: any;
+  genre: string;
+  genre2?: string;
+  genre3: any;
+}
+export interface MovieRoot {
+  date: string;
+  movies: Movie[];
+}
 
-export async function fetchTheatres(url: string): Promise<CinemaRoot[]>{
+export interface Movie {
+  title: string;
+  trailer_url: string;
+  graphic_url: string;
+  runtime: string;
+  rating: string;
+  film_HO_code: string;
+  corporate_film_id: string;
+  synopsis: string;
+  synopsis_alt: string;
+  opening_date: string;
+  genre: string;
+  genre2?: string;
+  genre3?: string;
+  cast: Cast[];
+  movie_versions: MovieVersion[];
+}
 
-    const response = await fetch(`${url}/api/vista/data/theatres`);
+export interface Cast {
+  ID: string;
+  FirstName: string;
+  LastName: string;
+  PersonType: string;
+}
 
-    const data = await response.json() as CinemaRoot[];
+export interface MovieVersion {
+  film_HOPK: string;
+  title: string;
+  film_HO_code: string;
+  id: string;
+  sessions: Session[];
+}
 
-    return data;
+export interface Session {
+  id: string;
+  showtime: string;
+  day: string;
+  hour: string;
+  seats_available: number;
+}
 
-};
+export async function fetchTheatres(url: string): Promise<CinemaRoot[]> {
+  const response = await fetch(`${url}/api/vista/data/theatres`);
 
-export async function fetchReleases(url: string, date: Date): Promise<ReleasesRoot[]>{
+  const data = (await response.json()) as CinemaRoot[];
 
-    const now = date.toISOString().slice(0, 10);
+  return data;
+}
 
-    const response = await fetch(`${url}/api/vista/data/releases?date=${now}`);
+export async function fetchReleases(url: string, date: Date): Promise<ReleasesRoot[]> {
+  const now = date.toISOString().slice(0, 10);
 
-    const data = await response.json() as ReleasesRoot[];
+  const response = await fetch(`${url}/api/vista/data/releases?date=${now}`);
 
-    return data;
-};
+  const data = (await response.json()) as ReleasesRoot[];
 
-export async function fetchBillboard(url: string, cinemaId: number): Promise<MovieRoot[]>{
+  return data;
+}
 
-    const response = await fetch(`${url}/api/vista/data/billboard?cinema_id=${cinemaId}`);
+export async function fetchBillboard(
+  url: string,
+  cinemaId: number,
+): Promise<MovieRoot[]> {
+  const response = await fetch(`${url}/api/vista/data/billboard?cinema_id=${cinemaId}`);
 
-    const data = await response.json() as MovieRoot[];
+  const data = (await response.json()) as MovieRoot[];
 
-    return data;
-};
-
-
+  return data;
+}

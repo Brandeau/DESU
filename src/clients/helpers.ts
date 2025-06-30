@@ -1,6 +1,6 @@
-import { type ParsedCinemarkMovie } from "../cinemark/Cinemark.ts";
-import { type ParsedCineplanetMovie } from "../cineplanet/Cineplanet.ts";
-import { type Movie, type ReducedMovie } from "../types.ts";
+import { type ParsedCinemarkMovie } from "./cinemark/Cinemark.ts";
+import { type ParsedCineplanetMovie } from "./cineplanet/Cineplanet.ts";
+import { type Movie, type ReducedMovie } from "./types.ts";
 
 export async function reduceMovies(
   array: ParsedCinemarkMovie[],

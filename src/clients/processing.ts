@@ -10,18 +10,12 @@ import {
   type CineplanetSession,
   type ParsedCineplanetMovie,
 } from "./cineplanet/Cineplanet.ts";
-import { getCookies } from "./cineplanet/helpers/getCookies.ts";
-import {
-  addId,
-  getEnv,
-  processMovies,
-  reduceCineplanetShowings,
-} from "./helpers/parse.ts";
+import { getCookies } from "./cineplanet/getCookies.ts";
+import { addId, getEnv, processMovies, reduceCineplanetShowings } from "./helpers.ts";
 import { type ParsedCinema } from "./types.ts";
 
 const subKey = getEnv("SUBSCRIPTION_KEY");
 const cineplanet = getEnv("CINEPLANET_URL");
-const cinemark = getEnv("CINEMARK_URL");
 const cookie = await getCookies(cineplanet);
 
 async function fetchTheatresFromCineplanet() {
@@ -69,7 +63,7 @@ async function fetchShowingsFromCineplanet() {
 }
 
 async function fetchTheatresFromCinemark() {
-  const rawTheatres = await Cinemark.getTheatres(cinemark);
+  const rawTheatres = await Cinemark.getTheatres();
   const theatres: ParsedCinema[] = [];
 
   for (let i = 0; i < rawTheatres.length; i++) {
@@ -91,7 +85,7 @@ async function fetchMoviesFromCinemark() {
   const movies: ParsedCinemarkMovie[][] = [];
 
   for (let i = 0; i < cinema_ids.length; i++) {
-    const rawMovies = await Cinemark.getBillboard(cinemark, cinema_ids[i]);
+    const rawMovies = await Cinemark.getBillboard(cinema_ids[i]);
 
     const parsed = await Cinemark.parseMovies(rawMovies);
 
@@ -110,7 +104,7 @@ async function fetchShowingsFromCinemark() {
   const showings: ParsedShowing[][] = [];
 
   for (let i = 0; i < cinema_ids.length; i++) {
-    const rawMovies = await Cinemark.getBillboard(cinemark, cinema_ids[i]);
+    const rawMovies = await Cinemark.getBillboard(cinema_ids[i]);
 
     const parsed = await Cinemark.parseShowings(rawMovies);
 
@@ -159,7 +153,7 @@ async function handler() {
     },
   );
 
-  const showings = [...cineplanetShowings, ...cinemarkShowings];
+  const showings = [...cineplanetShowings, ...cinemarkShowings.flat()];
 
   fs.writeFile(
     "var/data/showings.json",

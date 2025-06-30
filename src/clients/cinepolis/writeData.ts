@@ -1,10 +1,19 @@
 import { fetchMovieByCity, fetchTheatres, fetchComplexes } from "./fetchData.ts";
+import { parseData } from "./helpers/parser.ts";
 import fs from "node:fs";
 
 const BASE_URL ="https://cinepolischile.cl";
 
 const complexes = await fetchComplexes(BASE_URL);
+
 const theatres = await fetchTheatres();
+const parsedTheatres = [];
+
+theatres.forEach(theatre =>{
+    parseData(theatre['cinemas'], 'id', 'name', 'city_id').forEach(datum => {
+        parsedTheatres.push(datum);
+    })
+});
 
 async function getZones(complexes){
     const zones = [];
@@ -33,7 +42,8 @@ async function getAllMovies(url, zones){
 
 const allMovies = await getAllMovies(BASE_URL, zones);
 
-fs.writeFile("var/cinepolis/theatres.json", JSON.stringify(theatres, null, 2), 'utf8', (err) => {
+
+fs.writeFile("var/cinepolis/theatres.json", JSON.stringify(parsedTheatres, null, 2), 'utf8', (err) => {
     if (err) {
       console.error('Error writing file:', err);
       return;
@@ -41,11 +51,11 @@ fs.writeFile("var/cinepolis/theatres.json", JSON.stringify(theatres, null, 2), '
     console.log('File written successfully!');
 });
 
-fs.writeFile("var/cinepolis/movies.json", JSON.stringify(allMovies, null, 2), 'utf8', (err) => {
+/* fs.writeFile("var/cinepolis/movies.json", JSON.stringify(allMovies, null, 2), 'utf8', (err) => {
     if (err) {
       console.error('Error writing file:', err);
       return;
     }
     console.log('File written successfully!');
 });
-
+ */

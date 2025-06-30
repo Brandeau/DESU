@@ -1,4 +1,5 @@
-import { normalizeTitle } from "../helpers/parse.ts";
+import { CINEMA_CHAIN } from "../../constants.ts";
+import { normalizeTitle } from "../helpers.ts";
 import { type ParsedCinema } from "../types.ts";
 
 type CineplanetTheatre = {
@@ -155,7 +156,7 @@ export class Cineplanet {
       id: obj["ID"],
       name: obj["name"],
       city: obj["city"],
-      chain: 1,
+      chain: CINEMA_CHAIN.CINEPLANET,
     };
   }
 

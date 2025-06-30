@@ -1,11 +1,12 @@
 {
-    "compilerOptions": {
-      "allowImportingTsExtensions": true,
-      "noEmit": true,
-      "skipLibCheck": true,
-      "lib": ["esnext"],
-      "module": "nodenext",
-      "moduleResolution": "nodenext",
-      "target": "esnext"
-    }
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "lib": ["esnext"],
+    "strictNullChecks": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext"
   }
+}
