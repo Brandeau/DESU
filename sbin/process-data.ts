@@ -46,7 +46,7 @@ async function fetchMoviesFromCineplanet() {
   const movies: ParsedCineplanetMovie[] = [];
 
   for (let i = 0; i < rawMovies["movies"].length; i++) {
-    const parsed = await Cineplanet.parseMovies(rawMovies["movies"][i]);
+    const parsed = Cineplanet.parseMovies(rawMovies["movies"][i]);
 
     movies.push(parsed);
   }
@@ -73,7 +73,7 @@ async function fetchTheatresFromCinemark() {
 
   for (let i = 0; i < rawTheatres.length; i++) {
     for (let j = 0; j < rawTheatres[i]["cinemas"].length; j++) {
-      const parsed = await Cinemark.parseTheatres(rawTheatres[i]["cinemas"][j]);
+      const parsed = Cinemark.parseTheatres(rawTheatres[i]["cinemas"][j]);
 
       theatres.push(parsed);
     }
@@ -92,7 +92,7 @@ async function fetchMoviesFromCinemark() {
   for (let i = 0; i < cinema_ids.length; i++) {
     const rawMovies = await Cinemark.getBillboard(cinema_ids[i]);
 
-    const parsed = await Cinemark.parseMovies(rawMovies);
+    const parsed = Cinemark.parseMovies(rawMovies);
 
     movies.push(parsed);
   }
@@ -111,7 +111,7 @@ async function fetchShowingsFromCinemark() {
   for (let i = 0; i < cinema_ids.length; i++) {
     const rawMovies = await Cinemark.getBillboard(cinema_ids[i]);
 
-    const parsed = await Cinemark.parseShowings(rawMovies);
+    const parsed = Cinemark.parseShowings(rawMovies);
 
     showings.push(parsed);
   }
@@ -143,7 +143,7 @@ async function handler() {
   );
 
   const movies = [...cineplanetMovies, ...cinemarkMovies];
-  const moviesWithId = await addId(movies);
+  const moviesWithId = addId(movies);
 
   fs.writeFile(
     "var/data/movies.json",

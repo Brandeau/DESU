@@ -176,7 +176,7 @@ export class Cinemark {
     return movies as ParsedCinemarkMovie[];
   }
 
-  static async parseShowings(arr: CinemarkBillboard): Promise<ParsedShowing[]> {
+  static parseShowings(arr: CinemarkBillboard): ParsedShowing[] {
     const showings: ParsedShowing[] = [];
 
     arr.forEach((element) => {

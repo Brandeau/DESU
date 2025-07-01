@@ -95,7 +95,7 @@ export async function reduceCineplanetShowings(
   return parsed as ReducedMovie[];
 }
 
-export async function addId(array: ReducedMovie[]): Promise<Movie[]> {
+export function addId(array: ReducedMovie[]): Movie[] {
   const newArr: Movie[] = [];
 
   array.forEach((element, index) => {
