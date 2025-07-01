@@ -105,7 +105,7 @@ export class Cinemark {
   static url: string = getEnv("CINEMARK_URL");
 
   static async getTheatres(): Promise<CinemarkTheatres> {
-    const response = await fetch(`${Cinemark.url}/api/vista/data/theatres`);
+    const response = await fetch(`${this.url}/api/vista/data/theatres`);
 
     const data = (await response.json()) as CinemarkTheatres;
 
@@ -115,7 +115,7 @@ export class Cinemark {
   static async getReleases(date: Date): Promise<CinemarkReleases> {
     const now = date.toISOString().slice(0, 10);
 
-    const response = await fetch(`${Cinemark.url}/api/vista/data/releases?date=${now}`);
+    const response = await fetch(`${this.url}/api/vista/data/releases?date=${now}`);
 
     const data = (await response.json()) as CinemarkReleases;
 
@@ -124,7 +124,7 @@ export class Cinemark {
 
   static async getBillboard(cinemaId: number): Promise<CinemarkBillboard> {
     const response = await fetch(
-      `${Cinemark.url}/api/vista/data/billboard?cinema_id=${cinemaId}`,
+      `${this.url}/api/vista/data/billboard?cinema_id=${cinemaId}`,
     );
 
     const data = (await response.json()) as CinemarkBillboard;
