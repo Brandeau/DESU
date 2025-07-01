@@ -4,15 +4,20 @@ import {
   Cinemark,
   type ParsedCinemarkMovie,
   type ParsedShowing,
-} from "./cinemark/Cinemark.ts";
+} from "../src/clients/cinemark/Cinemark.ts";
 import {
   Cineplanet,
   type CineplanetSession,
   type ParsedCineplanetMovie,
-} from "./cineplanet/Cineplanet.ts";
-import { getCookies } from "./cineplanet/getCookies.ts";
-import { addId, getEnv, processMovies, reduceCineplanetShowings } from "./helpers.ts";
-import { type ParsedCinema } from "./types.ts";
+} from "../src/clients/cineplanet/Cineplanet.ts";
+import { getCookies } from "../src/clients/cineplanet/getCookies.ts";
+import {
+  addId,
+  getEnv,
+  processMovies,
+  reduceCineplanetShowings,
+} from "../src/clients/helpers.ts";
+import { type ParsedCinema } from "../src/clients/types.ts";
 
 const subKey = getEnv("SUBSCRIPTION_KEY");
 const cineplanet = getEnv("CINEPLANET_URL");
