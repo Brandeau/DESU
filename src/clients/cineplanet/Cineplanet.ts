@@ -102,6 +102,7 @@ export type ParsedCineplanetMovie = {
 
 export class Cineplanet {
   static url: string = getEnv("CINEPLANET_URL");
+  subKey = getEnv("SUBSCRIPTION_KEY");
 
   private constructor(readonly cookie: string) {}
 
@@ -117,16 +118,12 @@ export class Cineplanet {
 
     return cookie;
   }
-  static async getTheatres(
-    cookie: string,
-    url: string,
-    subKey: string,
-  ): Promise<CineplanetTheatres> {
-    const response = await fetch(`${url}/api/cache/cinemascache`, {
+  async getTheatres(): Promise<CineplanetTheatres> {
+    const response = await fetch(`${Cineplanet.url}/api/cache/cinemascache`, {
       method: "GET",
       headers: {
-        "Ocp-Apim-Subscription-Key": subKey,
-        cookie,
+        "Ocp-Apim-Subscription-Key": this.subKey,
+        "cookie": this.cookie,
       },
     });
     const cinemas = (await response.json()) as CineplanetTheatres;
@@ -134,16 +131,12 @@ export class Cineplanet {
     return cinemas;
   }
 
-  static async getMovies(
-    cookie: string,
-    url: string,
-    subKey: string,
-  ): Promise<CineplanetBillboard> {
-    const response = await fetch(`${url}/api/cache/moviescache`, {
+  async getMovies(): Promise<CineplanetBillboard> {
+    const response = await fetch(`${Cineplanet.url}/api/cache/moviescache`, {
       method: "GET",
       headers: {
-        "Ocp-Apim-Subscription-Key": subKey,
-        cookie,
+        "Ocp-Apim-Subscription-Key": this.subKey,
+        "cookie": this.cookie,
       },
     });
     const movies = (await response.json()) as CineplanetBillboard;
@@ -151,16 +144,12 @@ export class Cineplanet {
     return movies;
   }
 
-  static async getShowings(
-    cookie: string,
-    url: string,
-    subKey: string,
-  ): Promise<CineplanetSessions> {
-    const response = await fetch(`${url}/api/cache/sessioncache`, {
+  async getShowings(): Promise<CineplanetSessions> {
+    const response = await fetch(`${Cineplanet.url}/api/cache/sessioncache`, {
       method: "GET",
       headers: {
-        "Ocp-Apim-Subscription-Key": subKey,
-        cookie,
+        "Ocp-Apim-Subscription-Key": this.subKey,
+        "cookie": this.cookie,
       },
     });
     const showings = (await response.json()) as CineplanetSessions;

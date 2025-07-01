@@ -10,21 +10,17 @@ import {
   type CineplanetSession,
   type ParsedCineplanetMovie,
 } from "../src/clients/cineplanet/Cineplanet.ts";
-import { getCookies } from "../src/clients/cineplanet/getCookies.ts";
 import {
   addId,
-  getEnv,
   processMovies,
   reduceCineplanetShowings,
 } from "../src/clients/helpers.ts";
 import { type ParsedCinema } from "../src/clients/types.ts";
 
-const subKey = getEnv("SUBSCRIPTION_KEY");
-const cineplanet = getEnv("CINEPLANET_URL");
-const cookie = await getCookies(cineplanet);
+const cineplanet = await Cineplanet.init();
 
 async function fetchTheatresFromCineplanet() {
-  const rawTheatres = await Cineplanet.getTheatres(cookie, cineplanet, subKey);
+  const rawTheatres = await cineplanet.getTheatres();
   const theatres: {
     id: string;
     name: string;
@@ -42,7 +38,7 @@ async function fetchTheatresFromCineplanet() {
 }
 
 async function fetchMoviesFromCineplanet() {
-  const rawMovies = await Cineplanet.getMovies(cookie, cineplanet, subKey);
+  const rawMovies = await cineplanet.getMovies();
   const movies: ParsedCineplanetMovie[] = [];
 
   for (let i = 0; i < rawMovies["movies"].length; i++) {
@@ -57,7 +53,7 @@ async function fetchMoviesFromCineplanet() {
 }
 
 async function fetchShowingsFromCineplanet() {
-  const rawShowings = await Cineplanet.getShowings(cookie, cineplanet, subKey);
+  const rawShowings = await cineplanet.getShowings();
   const showings: CineplanetSession[] = [];
 
   for (let i = 0; i < rawShowings["sessions"].length; i++) {
