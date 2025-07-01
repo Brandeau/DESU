@@ -1,5 +1,6 @@
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { normalizeTitle } from "../helpers.ts";
+import { getEnv } from "../helpers.ts";
 import { type ParsedCinema } from "../types.ts";
 
 type CineplanetTheatre = {
@@ -100,6 +101,22 @@ export type ParsedCineplanetMovie = {
 };
 
 export class Cineplanet {
+  static url: string = getEnv("CINEPLANET_URL");
+
+  private constructor(readonly cookie: string) {}
+
+  static async init() {
+    const cookie = await this.getCookies(this.url);
+
+    return new Cineplanet(cookie);
+  }
+
+  static async getCookies(url: string): Promise<string> {
+    const response = await fetch(url);
+    const cookie = response.headers.getSetCookie()[0].split(";")[0];
+
+    return cookie;
+  }
   static async getTheatres(
     cookie: string,
     url: string,
