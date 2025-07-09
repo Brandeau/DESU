@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
@@ -75,6 +76,49 @@ type CinepolisZone = {
 
 type CinepolisZones = CinepolisZone[];
 
+type CinepolisTheatre = {
+  id: number;
+  name: string;
+  uris: string;
+  lat: string;
+  lng: string;
+  country: {
+    name: string;
+    code: string;
+  };
+  region: {
+    id: number;
+    name: string;
+  };
+  settings: {
+    has_food_sales: boolean;
+  };
+  cinemas: CinepolisCinema[];
+  message: unknown;
+  status_code: number;
+  error: unknown;
+  error_description: unknown;
+};
+
+type CinepolisCinema = {
+  id: number;
+  vista_id: string;
+  uris: string;
+  city_id: number;
+  name: string;
+  lat: string;
+  lng: string;
+  phone: string;
+  address: string;
+  position: number;
+  settings: {
+    is_special_prices: boolean;
+    type_food_sales: unknown;
+    cs_merchant_id: unknown;
+    vco_merchant_id: unknown;
+  };
+};
+
 export class Cinepolis {
   static url: string = getEnv("CINEPOLIS_URL");
 
@@ -92,7 +136,7 @@ export class Cinepolis {
     return data;
   }
 
-  static async fetchComplexes(): Promise<CinepolisZone[]> {
+  static async fetchComplexes(): Promise<CinepolisZones> {
     const response = await fetch(
       `${Cinepolis.url}/manejadores/CiudadesComplejos.ashx?EsVIP=false`,
     );
@@ -102,12 +146,12 @@ export class Cinepolis {
     return data;
   }
 
-  static async fetchTheatres() {
+  static async fetchTheatres(): Promise<CinepolisTheatre[]> {
     const response = await fetch(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
     );
 
-    const data = (await response.json()) as any[];
+    const data = (await response.json()) as CinepolisTheatre[];
 
     return data;
   }
@@ -126,5 +170,20 @@ export class Cinepolis {
     return movies;
   }
 }
+//const data = await Cinepolis.getAllMovies();
 
-console.log(inspect(await Cinepolis.getAllMovies(), { depth: 11, colors: true }));
+/* fs.writeFile(
+  "var/cinepolis/movies.json",
+  JSON.stringify(data, null, 2),
+  "utf8",
+  (err) => {
+    if (err) {
+      console.error("Error writing file:", err);
+      return;
+    }
+    console.log("File written successfully!");
+  },
+);
+ */
+
+console.log(inspect(await Cinepolis.fetchTheatres(), { depth: 11, colors: true }));
