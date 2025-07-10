@@ -3,6 +3,7 @@ import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { getEnv } from "../helpers.ts";
+import { ParsedCinema } from "../types.ts";
 
 type CinepolisMovieForOneCity = {
   CityKey: string;
@@ -66,7 +67,7 @@ type CinepolisComplex = {
 
 type CinepolisComplexes = CinepolisComplex[];
 
-type CinepolisZone = {
+type CinepolisZoneShort = {
   Complexes: CinepolisComplexes;
   Nombre: string;
   Clave: string;
@@ -74,9 +75,9 @@ type CinepolisZone = {
   GeoY: string;
 };
 
-type CinepolisZones = CinepolisZone[];
+type CinepolisZonesShort = CinepolisZoneShort[];
 
-type CinepolisTheatre = {
+type CinepolisZoneFull = {
   id: number;
   name: string;
   uris: string;
@@ -136,22 +137,22 @@ export class Cinepolis {
     return data;
   }
 
-  static async fetchComplexes(): Promise<CinepolisZones> {
+  static async fetchComplexes(): Promise<CinepolisZonesShort> {
     const response = await fetch(
       `${Cinepolis.url}/manejadores/CiudadesComplejos.ashx?EsVIP=false`,
     );
 
-    const data = (await response.json()) as CinepolisZone[];
+    const data = (await response.json()) as CinepolisZoneShort[];
 
     return data;
   }
 
-  static async fetchTheatres(): Promise<CinepolisTheatre[]> {
+  static async fetchTheatres(): Promise<CinepolisZoneFull[]> {
     const response = await fetch(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
     );
 
-    const data = (await response.json()) as CinepolisTheatre[];
+    const data = (await response.json()) as CinepolisZoneFull[];
 
     return data;
   }
@@ -168,6 +169,15 @@ export class Cinepolis {
       }
     }
     return movies;
+  }
+
+  static parseTheatres(cinema: CinepolisCinema): ParsedCinema {
+    return {
+      id: String(cinema.id),
+      name: cinema.name,
+      city: String(cinema.city_id),
+      chain: CINEMA_CHAIN.CINEPOLIS,
+    };
   }
 }
 //const data = await Cinepolis.getAllMovies();
