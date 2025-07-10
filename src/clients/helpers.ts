@@ -133,9 +133,9 @@ export function normalizeTitle(title) {
 export function getKeyFromValue<T extends Record<PropertyKey, number[]>>(
   value: number,
   obj: T,
-): keyof T | null {
+): keyof T | "" {
   for (const key in obj) {
     if (obj[key].includes(value)) return key;
   }
-  return null;
+  return "";
 }
