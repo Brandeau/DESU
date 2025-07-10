@@ -129,3 +129,13 @@ export function getEnv(key: string, fallback?: string): string {
 export function normalizeTitle(title) {
   return title.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
+
+export function getKeyFromValue<T extends Record<PropertyKey, number[]>>(
+  value: number,
+  obj: T,
+): keyof T | null {
+  for (const key in obj) {
+    if (obj[key].includes(value)) return key;
+  }
+  return null;
+}
