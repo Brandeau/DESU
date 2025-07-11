@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
-import { getEnv } from "../helpers.ts";
+import { getEnv, getKeyFromValue } from "../helpers.ts";
 import { ParsedCinema } from "../types.ts";
 
 type CinepolisMovieForOneCity = {
@@ -123,6 +123,25 @@ type CinepolisCinema = {
 export class Cinepolis {
   static url: string = getEnv("CINEPOLIS_URL");
 
+  static cities = {
+    "Antofagasta": [466, 467],
+    "Calama": [468],
+    "Quillota": [570],
+    "Coquimbo": [572],
+    "Ovalle": [623],
+    "Santiago": [
+      461, 560, 499, 450, 456, 457, 458, 459, 460, 507, 551, 552, 453, 464, 465, 680, 729,
+      736, 452, 462, 463, 592, 617,
+    ],
+    "Talca": [455],
+    "Los Ángeles": [470],
+    "Temuco": [471, 622],
+    "Chillán": [475],
+    "San Fernando": [514],
+    "Chiloé": [620],
+    "Puerto Montt": [702, 761],
+  };
+
   static async fetchMovieByCity(city: string): Promise<CinepolisMovieForOneCity> {
     const response = await fetch(`${Cinepolis.url}/Cartelera.aspx/GetNowPlayingByCity`, {
       method: "POST",
@@ -175,7 +194,7 @@ export class Cinepolis {
     return {
       id: String(cinema.id),
       name: cinema.name,
-      city: String(cinema.city_id),
+      city: getKeyFromValue(cinema.city_id, Cinepolis.cities),
       chain: CINEMA_CHAIN.CINEPOLIS,
     };
   }
