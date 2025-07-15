@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
+import { truncateString } from "../helpers.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
 import { type ParsedCinema } from "../types.ts";
 
@@ -169,10 +170,22 @@ export class Cinepolis {
   static async fetchTheatres(): Promise<CinepolisZoneFull[]> {
     const response = await fetch(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
+      {
+        headers: {
+          "user-agent": "Mozilla/5.0 ",
+        },
+      },
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}}`);
+      throw new Error(`HTTP error! status: ${response.status}}`, {
+        cause: {
+          headers: Object.fromEntries(response.headers.entries()),
+          statusText: response.statusText,
+          url: response.url,
+          body: truncateString(await response.text(), 100),
+        },
+      });
     }
 
     const data = (await response.json()) as CinepolisZoneFull[];
