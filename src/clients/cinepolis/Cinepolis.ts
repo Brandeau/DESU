@@ -3,7 +3,7 @@ import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
-import { ParsedCinema } from "../types.ts";
+import { type ParsedCinema } from "../types.ts";
 
 type CinepolisMovieForOneCity = {
   CityKey: string;
@@ -171,6 +171,10 @@ export class Cinepolis {
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
     );
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}}`);
+    }
+
     const data = (await response.json()) as CinepolisZoneFull[];
 
     return data;
@@ -190,29 +194,20 @@ export class Cinepolis {
     return movies;
   }
 
-  static parseTheatres(cinema: CinepolisCinema): ParsedCinema {
-    return {
-      id: String(cinema.id),
-      name: cinema.name,
-      city: getKeyFromValue(cinema.city_id, Cinepolis.cities),
-      chain: CINEMA_CHAIN.CINEPOLIS,
-    };
+  static parseTheatres(zones: CinepolisZoneFull[]): ParsedCinema[] {
+    const cinemas: ParsedCinema[] = [];
+
+    zones.forEach((zone) => {
+      zone.cinemas.forEach((cinema) => {
+        cinemas.push({
+          id: String(cinema.id),
+          name: cinema.name,
+          city: getKeyFromValue(cinema.id, Cinepolis.cities),
+          chain: CINEMA_CHAIN.CINEPOLIS,
+        });
+      });
+    });
+
+    return cinemas;
   }
 }
-//const data = await Cinepolis.getAllMovies();
-
-/* fs.writeFile(
-  "var/cinepolis/movies.json",
-  JSON.stringify(data, null, 2),
-  "utf8",
-  (err) => {
-    if (err) {
-      console.error("Error writing file:", err);
-      return;
-    }
-    console.log("File written successfully!");
-  },
-);
- */
-
-console.log(inspect(await Cinepolis.fetchTheatres(), { depth: 11, colors: true }));
