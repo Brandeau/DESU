@@ -10,6 +10,7 @@ import {
   type CineplanetSession,
   type ParsedCineplanetMovie,
 } from "../src/clients/cineplanet/Cineplanet.ts";
+import { Cinepolis } from "../src/clients/cinepolis/Cinepolis.ts";
 import {
   addId,
   processMovies,
@@ -115,15 +116,24 @@ async function fetchShowingsFromCinemark() {
   return showings;
 }
 
+async function fetchTheatresFromCinepolis() {
+  const rawTheatres = await Cinepolis.fetchTheatres();
+
+  const parsed = Cinepolis.parseTheatres(rawTheatres);
+
+  return parsed;
+}
+
 async function handler() {
   const cinemarkTheatres = await fetchTheatresFromCinemark();
   const cineplanetTheatres = await fetchTheatresFromCineplanet();
+  const cinepolisTheatres = await fetchTheatresFromCinepolis();
   const cinemarkMovies = await fetchMoviesFromCinemark();
   const cineplanetMovies = await fetchMoviesFromCineplanet();
   const cinemarkShowings = await fetchShowingsFromCinemark();
   const cineplanetShowings = await fetchShowingsFromCineplanet();
 
-  const theatres = [...cineplanetTheatres, ...cinemarkTheatres];
+  const theatres = [...cineplanetTheatres, ...cinemarkTheatres, ...cinepolisTheatres];
 
   fs.writeFile(
     "var/data/theatres.json",
