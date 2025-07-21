@@ -9,7 +9,7 @@ import { type ParsedCinema } from "../types.ts";
 type CinepolisMovieForOneCity = {
   CityKey: string;
   CityName: string;
-  Date: {
+  Dates: {
     Movies: CinepolisMovies[];
     FilterDate: string;
     ShowtimeDate: string;
@@ -143,7 +143,7 @@ export class Cinepolis {
     "Puerto Montt": [702, 761],
   };
 
-  static async fetchMovieByCity(city: string): Promise<CinepolisMovieForOneCity> {
+  static async fetchMovieByCity(city: string): Promise<CinepolisMovieForOneCity[]> {
     const response = await fetch(`${Cinepolis.url}/Cartelera.aspx/GetNowPlayingByCity`, {
       method: "POST",
       headers: {
@@ -152,7 +152,7 @@ export class Cinepolis {
       body: JSON.stringify({ claveCiudad: city, esVIP: false }),
     });
 
-    const data = (await response.json()) as CinepolisMovieForOneCity;
+    const data = (await response.json()["d"]["Cinemas"]) as CinepolisMovieForOneCity[];
 
     return data;
   }
@@ -193,8 +193,8 @@ export class Cinepolis {
     return data;
   }
 
-  static async getAllMovies(): Promise<CinepolisMovieForOneCity[]> {
-    const movies: CinepolisMovieForOneCity[] = [];
+  static async getAllMovies(): Promise<CinepolisMovieForOneCity[][]> {
+    const movies: CinepolisMovieForOneCity[][] = [];
     const zones = await Cinepolis.fetchComplexes();
     const zoneKey = zones.map((e) => e.Clave);
 
@@ -224,3 +224,7 @@ export class Cinepolis {
     return cinemas;
   }
 }
+
+console.log(
+  inspect(await Cinepolis.fetchMovieByCity("sur-de-chile"), { depth: 13, colors: true }),
+);
