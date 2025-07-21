@@ -5,7 +5,7 @@ export type ParsedCinema = {
   chain: number;
 };
 
-export type ReducedMovie = {
+export type ParsedMovie = {
   source_id: string;
   title: string;
   showings: {

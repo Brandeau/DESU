@@ -1,10 +1,7 @@
 import { type ParsedCinemarkMovie } from "./cinemark/Cinemark.ts";
-import { type ParsedCineplanetMovie } from "./cineplanet/Cineplanet.ts";
-import { type Movie, type ReducedMovie } from "./types.ts";
+import { type Movie, type ParsedMovie } from "./types.ts";
 
-export async function reduceMovies(
-  array: ParsedCinemarkMovie[],
-): Promise<ReducedMovie[]> {
+export async function reduceMovies(array: ParsedCinemarkMovie[]): Promise<ParsedMovie[]> {
   const reducedMovies = array.reduce((accumulator, currentMovie) => {
     const existingMovie = accumulator.find((movie) => movie.title === currentMovie.title);
     //const re = /^.+(?=\s\()/;
@@ -21,12 +18,12 @@ export async function reduceMovies(
     }
 
     return accumulator;
-  }, [] as ReducedMovie[]);
+  }, [] as ParsedMovie[]);
 
   return reducedMovies;
 }
 
-export async function reduceCinemas(array: ReducedMovie[]): Promise<ReducedMovie[]> {
+export async function reduceCinemas(array: ParsedMovie[]): Promise<ParsedMovie[]> {
   const parsed = array.map((movie) => {
     // For each movie, reduce its cinemas array
     const reducedShowings = movie.showings.reduce(
@@ -56,15 +53,15 @@ export async function reduceCinemas(array: ReducedMovie[]): Promise<ReducedMovie
     return {
       ...movie, // Spread the original movie properties
       showings: reducedShowings, // Replace the original cinemas array with the collapsed one
-    } as ReducedMovie;
+    } as ParsedMovie;
   });
 
-  return parsed as ReducedMovie[];
+  return parsed as ParsedMovie[];
 }
 
 export async function reduceCineplanetShowings(
-  array: ParsedCineplanetMovie[],
-): Promise<ReducedMovie[]> {
+  array: ParsedMovie[],
+): Promise<ParsedMovie[]> {
   const parsed = array.map((movie) => {
     const reducedShowings = movie.showings.reduce(
       (acc, curr) => {
@@ -89,13 +86,13 @@ export async function reduceCineplanetShowings(
     return {
       ...movie,
       showings: reducedShowings,
-    } as ReducedMovie;
+    } as ParsedMovie;
   });
 
-  return parsed as ReducedMovie[];
+  return parsed as ParsedMovie[];
 }
 
-export function addId(array: ReducedMovie[]): Movie[] {
+export function addId(array: ParsedMovie[]): Movie[] {
   const newArr: Movie[] = [];
 
   array.forEach((element, index) => {
@@ -108,7 +105,7 @@ export function addId(array: ReducedMovie[]): Movie[] {
   return newArr;
 }
 
-export async function processMovies(arr: ParsedCinemarkMovie[]): Promise<ReducedMovie[]> {
+export async function processMovies(arr: ParsedCinemarkMovie[]): Promise<ParsedMovie[]> {
   const reducedMovies = await reduceMovies(arr);
   const reducedCinemas = await reduceCinemas(reducedMovies);
   //const cinemasWithId = await addId(reducedCinemas);

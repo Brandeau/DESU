@@ -1,7 +1,7 @@
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { normalizeTitle } from "../helpers.ts";
 import { getEnv } from "../helpers.ts";
-import { type ParsedCinema } from "../types.ts";
+import { type ParsedCinema, type ParsedMovie } from "../types.ts";
 
 type CineplanetTheatre = {
   ID: string;
@@ -166,7 +166,7 @@ export class Cineplanet {
     };
   }
 
-  static parseMovies(obj: CineplanetMovie): ParsedCineplanetMovie {
+  static parseMovies(obj: CineplanetMovie): ParsedMovie {
     const showings: {
       sessions: string[];
       cinemaId: string;
@@ -191,6 +191,6 @@ export class Cineplanet {
       title: normalizedTitle,
       showings: showings,
       isComingSoon: obj["isComingSoon"],
-    } as ParsedCineplanetMovie;
+    } as ParsedMovie;
   }
 }
