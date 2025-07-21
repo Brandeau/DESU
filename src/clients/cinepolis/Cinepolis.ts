@@ -143,13 +143,13 @@ export class Cinepolis {
     "Puerto Montt": [702, 761],
   };
 
-  static async fetchMovieByCity(city: string): Promise<CinepolisMovieForOneCity[]> {
+  static async getMoviesByZone(zone: string): Promise<CinepolisMovieForOneCity[]> {
     const response = await fetch(`${Cinepolis.url}/Cartelera.aspx/GetNowPlayingByCity`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify({ claveCiudad: city, esVIP: false }),
+      body: JSON.stringify({ claveCiudad: zone, esVIP: false }),
     });
 
     const data = (await response.json()["d"]["Cinemas"]) as CinepolisMovieForOneCity[];
@@ -157,7 +157,7 @@ export class Cinepolis {
     return data;
   }
 
-  static async fetchComplexes(): Promise<CinepolisZonesShort> {
+  static async getComplexes(): Promise<CinepolisZonesShort> {
     const response = await fetch(
       `${Cinepolis.url}/manejadores/CiudadesComplejos.ashx?EsVIP=false`,
     );
@@ -167,7 +167,7 @@ export class Cinepolis {
     return data;
   }
 
-  static async fetchTheatres(): Promise<CinepolisZoneFull[]> {
+  static async getTheatres(): Promise<CinepolisZoneFull[]> {
     const response = await fetch(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
       {
@@ -195,12 +195,12 @@ export class Cinepolis {
 
   static async getAllMovies(): Promise<CinepolisMovieForOneCity[][]> {
     const movies: CinepolisMovieForOneCity[][] = [];
-    const zones = await Cinepolis.fetchComplexes();
+    const zones = await Cinepolis.getComplexes();
     const zoneKey = zones.map((e) => e.Clave);
 
     for (let i = 0; i < zoneKey.length; i++) {
       if (zoneKey[i]) {
-        const cityMovie = await Cinepolis.fetchMovieByCity(zoneKey[i]);
+        const cityMovie = await Cinepolis.getMoviesByZone(zoneKey[i]);
         movies.push(cityMovie);
       }
     }
@@ -226,5 +226,5 @@ export class Cinepolis {
 }
 
 console.log(
-  inspect(await Cinepolis.fetchMovieByCity("sur-de-chile"), { depth: 13, colors: true }),
+  inspect(await Cinepolis.getMoviesByZone("sur-de-chile"), { depth: 13, colors: true }),
 );
