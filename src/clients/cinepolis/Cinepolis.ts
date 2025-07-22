@@ -4,6 +4,7 @@ import { inspect } from "node:util";
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { truncateString } from "../helpers.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
+import { customFetch } from "../helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../types.ts";
 
 type CinepolisMovieForOneCity = {
@@ -144,21 +145,24 @@ export class Cinepolis {
   };
 
   static async getMoviesByZone(zone: string): Promise<CinepolisMovieForOneCity[]> {
-    const response = await fetch(`${Cinepolis.url}/Cartelera.aspx/GetNowPlayingByCity`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
+    const response = await customFetch(
+      `${Cinepolis.url}/Cartelera.aspx/GetNowPlayingByCity`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: JSON.stringify({ claveCiudad: zone, esVIP: false }),
       },
-      body: JSON.stringify({ claveCiudad: zone, esVIP: false }),
-    });
+    );
 
-    const data = (await response.json()["d"]["Cinemas"]) as CinepolisMovieForOneCity[];
+    const data = ((await response.json()) as any)["d"]["Cinemas"];
 
-    return data;
+    return data as CinepolisMovieForOneCity[];
   }
 
   static async getComplexes(): Promise<CinepolisZonesShort> {
-    const response = await fetch(
+    const response = await customFetch(
       `${Cinepolis.url}/manejadores/CiudadesComplejos.ashx?EsVIP=false`,
     );
 
@@ -168,7 +172,7 @@ export class Cinepolis {
   }
 
   static async getTheatres(): Promise<CinepolisZoneFull[]> {
-    const response = await fetch(
+    const response = await customFetch(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
       {
         headers: {
@@ -176,17 +180,6 @@ export class Cinepolis {
         },
       },
     );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}}`, {
-        cause: {
-          headers: Object.fromEntries(response.headers.entries()),
-          statusText: response.statusText,
-          url: response.url,
-          body: truncateString(await response.text(), 100),
-        },
-      });
-    }
 
     const data = (await response.json()) as CinepolisZoneFull[];
 
@@ -247,6 +240,6 @@ export class Cinepolis {
   }
 }
 
-/* console.log(
+console.log(
   inspect(await Cinepolis.getMoviesByZone("sur-de-chile"), { depth: 13, colors: true }),
-); */
+);
