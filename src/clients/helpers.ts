@@ -144,3 +144,21 @@ export function truncateString(str: string, num: number) {
 
   return str;
 }
+
+export async function customFetch(...args: Parameters<typeof fetch>) {
+  const response = await fetch(...args);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}}`, {
+      cause: {
+        headers: Object.fromEntries(response.headers.entries()),
+        statusText: response.statusText,
+        url: response.url,
+        body: truncateString(await response.text(), 100),
+      },
+    });
+  }
+
+  const data = await response.json();
+  return data;
+}
