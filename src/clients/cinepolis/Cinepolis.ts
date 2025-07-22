@@ -4,13 +4,13 @@ import { inspect } from "node:util";
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { truncateString } from "../helpers.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
-import { type ParsedCinema } from "../types.ts";
+import { type ParsedCinema, type ParsedMovie } from "../types.ts";
 
 type CinepolisMovieForOneCity = {
   CityKey: string;
   CityName: string;
   Dates: {
-    Movies: CinepolisMovies[];
+    Movies: CinepolisMovie[];
     FilterDate: string;
     ShowtimeDate: string;
   }[];
@@ -31,7 +31,7 @@ type CinepolisShowtimes = {
   ShowtimeId: string;
   TimeFilter: string;
   Time: string;
-  ShowTimeAMPM: string;
+  ShowtimeAMPM: string;
 };
 
 type CinepolisFormats = {
@@ -43,7 +43,7 @@ type CinepolisFormats = {
   Language: string;
 };
 
-type CinepolisMovies = {
+type CinepolisMovie = {
   Formats: CinepolisFormats[];
   Id: number;
   Title: string;
@@ -55,11 +55,11 @@ type CinepolisMovies = {
   Poster: string;
   Trailer: string;
   Director: string;
-  Genre: string;
+  Gender: string;
   Distributor: string;
   Order: number;
   Actors: string[];
-}[];
+};
 
 type CinepolisComplex = {
   Nombre: string;
@@ -225,6 +225,6 @@ export class Cinepolis {
   }
 }
 
-console.log(
+/* console.log(
   inspect(await Cinepolis.getMoviesByZone("sur-de-chile"), { depth: 13, colors: true }),
-);
+); */
