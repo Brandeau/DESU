@@ -223,6 +223,28 @@ export class Cinepolis {
 
     return cinemas;
   }
+
+  static parseMovies(movie: CinepolisMovie): ParsedMovie {
+    const showings: {
+      cinemaId: string;
+      sessions: string[];
+    }[] = [];
+
+    movie.Formats.forEach((format) => {
+      format.Showtimes.forEach((showtime) => {
+        showings.push({
+          cinemaId: String(showtime.CinemaId),
+          sessions: [showtime.ShowtimeId],
+        });
+      });
+    });
+    return {
+      source_id: String(movie.Id),
+      title: movie.Title,
+      showings: showings,
+      isComingSoon: movie.Formats.length > 0 ? false : true,
+    } as ParsedMovie;
+  }
 }
 
 /* console.log(
