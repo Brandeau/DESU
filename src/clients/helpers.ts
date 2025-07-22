@@ -145,7 +145,7 @@ export function truncateString(str: string, num: number) {
   return str;
 }
 
-export async function customFetch(...args: Parameters<typeof fetch>) {
+export async function customFetch(...args: Parameters<typeof fetch>): Promise<Response> {
   const response = await fetch(...args);
 
   if (!response.ok) {
@@ -158,7 +158,5 @@ export async function customFetch(...args: Parameters<typeof fetch>) {
       },
     });
   }
-
-  const data = await response.json();
-  return data;
+  return response;
 }
