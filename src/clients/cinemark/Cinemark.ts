@@ -101,6 +101,14 @@ export type ParsedShowing = {
   languages: string[];
 };
 
+export type ParsedShowing2 = {
+  id: string;
+  date: string;
+  time: string;
+  formats: string[];
+  languages: string[];
+};
+
 export class Cinemark {
   static url: string = getEnv("CINEMARK_URL");
 
@@ -176,22 +184,29 @@ export class Cinemark {
     return movies as ParsedCinemarkMovie[];
   }
 
-  static parseShowings(arr: CinemarkBillboard): ParsedShowing[] {
-    const showings: ParsedShowing[] = [];
+  static parseShowings(arr: CinemarkBillboard): ParsedShowing2[] {
+    const showings: ParsedShowing2[] = [];
 
     arr.forEach((element) => {
       element["movies"].forEach((movie) => {
         movie["movie_versions"].forEach((version) => {
           version["sessions"].forEach((session) => {
-            const re = /(?<=\().*(?=\))/;
-            const match = version["title"].match(re);
-            const formats = match ? match[0].split(" ") : [];
+            const titleRe = /(?<=\().*(?=\))/;
+            const titleMatch = version["title"].match(titleRe);
+            const formats = titleMatch ? titleMatch[0].split(" ") : [];
             const firstElem = formats.pop();
             const lang = firstElem === undefined ? "" : firstElem;
+            const dateRe = /.*(?=T)/;
+            const dateMatch = session["showtime"].match(dateRe);
+            const date = dateMatch ? dateMatch[0] : "";
+            const timeRe = /\d+:\d+/;
+            const timeMatch = session["showtime"].match(timeRe);
+            const time = timeMatch ? timeMatch[0] : "";
 
             showings.push({
               id: session["id"],
-              showtime: session["showtime"],
+              date: date,
+              time: time,
               formats: formats,
               languages: [lang],
             });
@@ -200,6 +215,6 @@ export class Cinemark {
       });
     });
 
-    return showings as ParsedShowing[];
+    return showings as ParsedShowing2[];
   }
 }
