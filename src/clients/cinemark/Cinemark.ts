@@ -96,13 +96,6 @@ export type ParsedCinemarkMovie = {
 
 export type ParsedShowing = {
   id: string;
-  showtime: string;
-  formats: string[];
-  languages: string[];
-};
-
-export type ParsedShowing2 = {
-  id: string;
   date: string;
   time: string;
   formats: string[];
@@ -184,8 +177,8 @@ export class Cinemark {
     return movies as ParsedCinemarkMovie[];
   }
 
-  static parseShowings(arr: CinemarkBillboard): ParsedShowing2[] {
-    const showings: ParsedShowing2[] = [];
+  static parseShowings(arr: CinemarkBillboard): ParsedShowing[] {
+    const showings: ParsedShowing[] = [];
 
     arr.forEach((element) => {
       element["movies"].forEach((movie) => {
@@ -215,6 +208,6 @@ export class Cinemark {
       });
     });
 
-    return showings as ParsedShowing2[];
+    return showings as ParsedShowing[];
   }
 }

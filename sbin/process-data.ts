@@ -7,7 +7,6 @@ import {
 } from "../src/clients/cinemark/Cinemark.ts";
 import {
   Cineplanet,
-  type CineplanetSession,
   type ParsedCineplanetMovie,
 } from "../src/clients/cineplanet/Cineplanet.ts";
 import { Cinepolis } from "../src/clients/cinepolis/Cinepolis.ts";
@@ -55,10 +54,12 @@ async function fetchMoviesFromCineplanet() {
 
 async function fetchShowingsFromCineplanet() {
   const rawShowings = await cineplanet.getShowings();
-  const showings: CineplanetSession[] = [];
+  const showings: ParsedShowing[] = [];
 
   for (let i = 0; i < rawShowings["sessions"].length; i++) {
-    showings.push(rawShowings["sessions"][i]);
+    const raw = rawShowings["sessions"][i];
+    const parsed = Cineplanet.parseShowings(raw);
+    showings.push(parsed);
   }
 
   return showings;
@@ -117,7 +118,7 @@ async function fetchShowingsFromCinemark() {
 }
 
 async function fetchTheatresFromCinepolis() {
-  const rawTheatres = await Cinepolis.fetchTheatres();
+  const rawTheatres = await Cinepolis.getTheatres();
 
   const parsed = Cinepolis.parseTheatres(rawTheatres);
 

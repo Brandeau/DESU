@@ -1,5 +1,5 @@
 import { CINEMA_CHAIN } from "../../constants.ts";
-import { type ParsedShowing2 } from "../cinemark/Cinemark.ts";
+import { type ParsedShowing } from "../cinemark/Cinemark.ts";
 import { normalizeTitle } from "../helpers.ts";
 import { getEnv } from "../helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../types.ts";
@@ -195,7 +195,7 @@ export class Cineplanet {
     } as ParsedMovie;
   }
 
-  static parseShowings(session: CineplanetSession): ParsedShowing2 {
+  static parseShowings(session: CineplanetSession): ParsedShowing {
     const dateRe = /.*(?=T)/;
     const dateMatch = session["showtime"].match(dateRe);
     const date = dateMatch ? dateMatch[0] : "";
@@ -209,6 +209,6 @@ export class Cineplanet {
       time: time,
       formats: session.formats,
       languages: session.languages,
-    } as ParsedShowing2;
+    } as ParsedShowing;
   }
 }

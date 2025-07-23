@@ -10,11 +10,7 @@ import { type ParsedCinema, type ParsedMovie } from "../types.ts";
 type CinepolisMovieForOneCity = {
   CityKey: string;
   CityName: string;
-  Dates: {
-    Movies: CinepolisMovie[];
-    FilterDate: string;
-    ShowtimeDate: string;
-  }[];
+  Dates: CinepolisDate[];
   Status: number;
   Id: number;
   VistaId: string;
@@ -24,6 +20,12 @@ type CinepolisMovieForOneCity = {
   Children: string;
   Order: number;
   TimeZoneDifference: number;
+};
+
+type CinepolisDate = {
+  Movies: CinepolisMovie[];
+  FilterDate: string;
+  ShowtimeDate: string;
 };
 
 type CinepolisShowtimes = {
@@ -238,8 +240,8 @@ export class Cinepolis {
       isComingSoon: movie.Formats.length > 0 ? false : true,
     } as ParsedMovie;
   }
-}
 
-console.log(
-  inspect(await Cinepolis.getMoviesByZone("sur-de-chile"), { depth: 13, colors: true }),
-);
+  static parseShowings(movie: CinepolisDate) {
+    const date = movie.ShowtimeDate;
+  }
+}
