@@ -1,4 +1,5 @@
 import { CINEMA_CHAIN } from "../../constants.ts";
+import { type ParsedShowing2 } from "../cinemark/Cinemark.ts";
 import { normalizeTitle } from "../helpers.ts";
 import { getEnv } from "../helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../types.ts";
@@ -192,5 +193,22 @@ export class Cineplanet {
       showings: showings,
       isComingSoon: obj["isComingSoon"],
     } as ParsedMovie;
+  }
+
+  static parseShowings(session: CineplanetSession): ParsedShowing2 {
+    const dateRe = /.*(?=T)/;
+    const dateMatch = session["showtime"].match(dateRe);
+    const date = dateMatch ? dateMatch[0] : "";
+    const timeRe = /\d+:\d+/;
+    const timeMatch = session["showtime"].match(timeRe);
+    const time = timeMatch ? timeMatch[0] : "";
+
+    return {
+      id: session.id,
+      date: date,
+      time: time,
+      formats: session.formats,
+      languages: session.languages,
+    } as ParsedShowing2;
   }
 }
