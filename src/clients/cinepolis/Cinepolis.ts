@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
+import { ParsedShowing } from "../cinemark/Cinemark.ts";
 import { truncateString } from "../helpers.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
 import { customFetch } from "../helpers.ts";
@@ -241,7 +242,25 @@ export class Cinepolis {
     } as ParsedMovie;
   }
 
-  static parseShowings(movie: CinepolisDate) {
+  static parseShowings(movie: CinepolisDate): ParsedShowing[] {
     const date = movie.ShowtimeDate;
+    const showings: ParsedShowing[] = [];
+
+    movie.Movies.forEach((movie) => {
+      movie.Formats.forEach((format) => {
+        const lang = format.Language;
+        format.Showtimes.forEach((showtime) => {
+          showings.push({
+            id: showtime.ShowtimeId,
+            date: date,
+            time: showtime.Time,
+            formats: [],
+            languages: [lang],
+          });
+        });
+      });
+    });
+
+    return showings;
   }
 }
