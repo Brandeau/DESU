@@ -248,12 +248,14 @@ export class Cinepolis {
     movie.Movies.forEach((movie) => {
       movie.Formats.forEach((format) => {
         const lang = format.Language;
+        const form = format.Name;
+
         format.Showtimes.forEach((showtime) => {
           showings.push({
             id: showtime.ShowtimeId,
             date: date,
             time: showtime.Time,
-            formats: [],
+            formats: [form],
             languages: [lang],
           });
         });
