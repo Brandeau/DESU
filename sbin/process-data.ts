@@ -15,7 +15,7 @@ import {
   processMovies,
   reduceCineplanetShowings,
 } from "../src/clients/helpers.ts";
-import { type ParsedCinema } from "../src/clients/types.ts";
+import { type ParsedCinema, type ParsedMovie } from "../src/clients/types.ts";
 
 const cineplanet = await Cineplanet.init();
 
@@ -125,12 +125,30 @@ async function fetchTheatresFromCinepolis() {
   return parsed;
 }
 
+async function fetchMoviesFromCinepolis() {
+  const movies: ParsedMovie[] = [];
+
+  const rawMovies = (await Cinepolis.getAllMovies()).flat();
+
+  rawMovies.forEach((rawMovie) => {
+    rawMovie.Dates.forEach((date) => {
+      date.Movies.forEach((movie) => {
+        const parsed = Cinepolis.parseMovies(movie);
+        movies.push(parsed);
+      });
+    });
+  });
+
+  return movies;
+}
+
 async function handler() {
   const cinemarkTheatres = await fetchTheatresFromCinemark();
   const cineplanetTheatres = await fetchTheatresFromCineplanet();
   const cinepolisTheatres = await fetchTheatresFromCinepolis();
   const cinemarkMovies = await fetchMoviesFromCinemark();
   const cineplanetMovies = await fetchMoviesFromCineplanet();
+  const cinepolisMovies = await fetchMoviesFromCinepolis();
   const cinemarkShowings = await fetchShowingsFromCinemark();
   const cineplanetShowings = await fetchShowingsFromCineplanet();
 
@@ -149,7 +167,7 @@ async function handler() {
     },
   );
 
-  const movies = [...cineplanetMovies, ...cinemarkMovies];
+  const movies = [...cineplanetMovies, ...cinemarkMovies, ...cinepolisMovies];
   const moviesWithId = addId(movies);
 
   fs.writeFile(

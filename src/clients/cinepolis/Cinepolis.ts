@@ -2,8 +2,7 @@ import fs from "node:fs";
 import { inspect } from "node:util";
 
 import { CINEMA_CHAIN } from "../../constants.ts";
-import { ParsedShowing } from "../cinemark/Cinemark.ts";
-import { truncateString } from "../helpers.ts";
+import { type ParsedShowing } from "../cinemark/Cinemark.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
 import { customFetch } from "../helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../types.ts";
