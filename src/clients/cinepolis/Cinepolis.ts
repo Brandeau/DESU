@@ -178,7 +178,7 @@ export class Cinepolis {
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
       {
         headers: {
-          "user-agent": "Mozilla/5.0 ",
+          "sec-ch-ua-mobile": "?0",
         },
       },
     );
