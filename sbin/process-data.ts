@@ -10,11 +10,7 @@ import {
   type ParsedCineplanetMovie,
 } from "../src/clients/cineplanet/Cineplanet.ts";
 import { Cinepolis } from "../src/clients/cinepolis/Cinepolis.ts";
-import {
-  addId,
-  processMovies,
-  reduceCineplanetShowings,
-} from "../src/clients/helpers.ts";
+import { addId, processMovies, reduceShowings } from "../src/clients/helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../src/clients/types.ts";
 
 const cineplanet = await Cineplanet.init();
@@ -47,7 +43,7 @@ async function fetchMoviesFromCineplanet() {
     movies.push(parsed);
   }
 
-  const reducedMovies = await reduceCineplanetShowings(movies);
+  const reducedMovies = await reduceShowings(movies);
 
   return reducedMovies;
 }
@@ -139,7 +135,9 @@ async function fetchMoviesFromCinepolis() {
     });
   });
 
-  return movies;
+  const reducedMovies = await reduceShowings(movies);
+
+  return reducedMovies;
 }
 
 async function handler() {
