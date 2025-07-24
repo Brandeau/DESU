@@ -59,9 +59,7 @@ export async function reduceCinemas(array: ParsedMovie[]): Promise<ParsedMovie[]
   return parsed as ParsedMovie[];
 }
 
-export async function reduceCineplanetShowings(
-  array: ParsedMovie[],
-): Promise<ParsedMovie[]> {
+export async function reduceShowings(array: ParsedMovie[]): Promise<ParsedMovie[]> {
   const parsed = array.map((movie) => {
     const reducedShowings = movie.showings.reduce(
       (acc, curr) => {
