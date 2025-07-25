@@ -141,6 +141,22 @@ async function fetchMoviesFromCinepolis() {
   return reducedMovies;
 }
 
+async function fetchShowingsFromCinepolis() {
+  const showings: ParsedShowing[][] = [];
+
+  const rawMovies = cinepolis.movies.flat();
+
+  rawMovies.forEach((rawMovie) => {
+    rawMovie.Dates.forEach((date) => {
+      const parsed = Cinepolis.parseShowings(date);
+
+      showings.push(parsed);
+    });
+  });
+
+  return showings;
+}
+
 async function handler() {
   const cinemarkTheatres = await fetchTheatresFromCinemark();
   const cineplanetTheatres = await fetchTheatresFromCineplanet();
@@ -150,6 +166,7 @@ async function handler() {
   const cinepolisMovies = await fetchMoviesFromCinepolis();
   const cinemarkShowings = await fetchShowingsFromCinemark();
   const cineplanetShowings = await fetchShowingsFromCineplanet();
+  const cinepolisShowings = await fetchShowingsFromCinepolis();
 
   const theatres = [...cineplanetTheatres, ...cinemarkTheatres, ...cinepolisTheatres];
 
@@ -182,7 +199,11 @@ async function handler() {
     },
   );
 
-  const showings = [...cineplanetShowings, ...cinemarkShowings.flat()];
+  const showings = [
+    ...cineplanetShowings,
+    ...cinemarkShowings.flat(),
+    ...cinepolisShowings.flat(),
+  ];
 
   fs.writeFile(
     "var/data/showings.json",

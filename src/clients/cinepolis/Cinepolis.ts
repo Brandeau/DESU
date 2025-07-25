@@ -1,6 +1,3 @@
-import fs from "node:fs";
-import { inspect } from "node:util";
-
 import { CINEMA_CHAIN } from "../../constants.ts";
 import { type ParsedShowing } from "../cinemark/Cinemark.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
