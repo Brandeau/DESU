@@ -14,6 +14,7 @@ import { addId, processMovies, reduceShowings } from "../src/clients/helpers.ts"
 import { type ParsedCinema, type ParsedMovie } from "../src/clients/types.ts";
 
 const cineplanet = await Cineplanet.init();
+const cinepolis = await Cinepolis.init();
 
 async function fetchTheatresFromCineplanet() {
   const rawTheatres = await cineplanet.getTheatres();
@@ -114,7 +115,7 @@ async function fetchShowingsFromCinemark() {
 }
 
 async function fetchTheatresFromCinepolis() {
-  const rawTheatres = await Cinepolis.getTheatres();
+  const rawTheatres = await cinepolis.getTheatres();
 
   const parsed = Cinepolis.parseTheatres(rawTheatres);
 
@@ -124,7 +125,7 @@ async function fetchTheatresFromCinepolis() {
 async function fetchMoviesFromCinepolis() {
   const movies: ParsedMovie[] = [];
 
-  const rawMovies = (await Cinepolis.getAllMovies()).flat();
+  const rawMovies = cinepolis.movies.flat();
 
   rawMovies.forEach((rawMovie) => {
     rawMovie.Dates.forEach((date) => {

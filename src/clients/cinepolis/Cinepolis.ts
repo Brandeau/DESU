@@ -146,6 +146,14 @@ export class Cinepolis {
     "Puerto Montt": [702, 761],
   };
 
+  private constructor(readonly movies: CinepolisMovieForOneCity[][]) {}
+
+  static async init() {
+    const movies = await this.getAllMovies();
+
+    return new Cinepolis(movies);
+  }
+
   static async getMoviesByZone(zone: string): Promise<CinepolisMovieForOneCity[]> {
     const response = await customFetch(
       `${Cinepolis.url}/Cartelera.aspx/GetNowPlayingByCity`,
@@ -173,7 +181,7 @@ export class Cinepolis {
     return data;
   }
 
-  static async getTheatres(): Promise<CinepolisZoneFull[]> {
+  async getTheatres(): Promise<CinepolisZoneFull[]> {
     const response = await customFetch(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
       {
@@ -190,12 +198,12 @@ export class Cinepolis {
 
   static async getAllMovies(): Promise<CinepolisMovieForOneCity[][]> {
     const movies: CinepolisMovieForOneCity[][] = [];
-    const zones = await Cinepolis.getComplexes();
+    const zones = await this.getComplexes();
     const zoneKey = zones.map((e) => e.Clave);
 
     for (let i = 0; i < zoneKey.length; i++) {
       if (zoneKey[i]) {
-        const cityMovie = await Cinepolis.getMoviesByZone(zoneKey[i]);
+        const cityMovie = await this.getMoviesByZone(zoneKey[i]);
         movies.push(cityMovie);
       }
     }
