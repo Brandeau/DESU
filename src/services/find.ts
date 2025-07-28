@@ -106,4 +106,4 @@ function replaceAllShowings(movies: Movie[]) {
   return arr;
 }
 
-console.log(inspect(searchMovieByTitle("superman"), { depth: 11, colors: true }));
+console.log(inspect(searchMovieByTitle("fantásticos"), { depth: 11, colors: true }));

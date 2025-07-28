@@ -37,7 +37,8 @@ export type MovieResult = {
 };
 
 export type Sessions = ({
-  showtime: string;
+  date: string;
+  time: string;
   formats: string[];
   languages: string[];
 } | null)[];
