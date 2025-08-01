@@ -14,14 +14,21 @@ new Command()
     "Command line application to fetch all showings for a given movie across all main theatre chains in Santiago, Chile",
   )
   .command("search", "Find all available showings of a movie")
-  .action(async () => {
-    const title = await Select.prompt({
-      message: "Select an option:",
-      options: titles,
-    });
+  .option("-t, --title <title:string>", "Input title")
+  .action(async (options) => {
+    if (options.title) {
+      const results = searchMovieByTitle(options.title);
 
-    const results = searchMovieByTitle(title);
+      console.log(results);
+    } else {
+      const title = await Select.prompt({
+        message: "Select an option:",
+        options: titles,
+      });
 
-    console.log(results);
+      const results = searchMovieByTitle(title);
+
+      console.log(results);
+    }
   })
   .parse(process.argv.slice(2));
