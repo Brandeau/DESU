@@ -165,7 +165,7 @@ async function fetchShowingsFromCinepolis() {
   return showings;
 }
 
-async function handler() {
+async function consolidateData() {
   const cinemarkTheatres = await fetchTheatresFromCinemark();
   const cineplanetTheatres = await fetchTheatresFromCineplanet();
   const cinepolisTheatres = await fetchTheatresFromCinepolis();
@@ -177,44 +177,48 @@ async function handler() {
   const cinepolisShowings = await fetchShowingsFromCinepolis();
 
   const theatres = [...cineplanetTheatres, ...cinemarkTheatres, ...cinepolisTheatres];
-
-  fs.writeFile(
-    "var/data/theatres.json",
-    JSON.stringify(theatres, null, 2),
-    "utf8",
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-        return;
-      }
-      console.log("File written successfully!");
-    },
-  );
-  const movies = [...cineplanetMovies, ...cinemarkMovies, ...cinepolisMovies];
-  const moviesWithId = addId(movies);
-
-  fs.writeFile(
-    "var/data/movies.json",
-    JSON.stringify(moviesWithId, null, 2),
-    "utf8",
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-        return;
-      }
-      console.log("File written successfully!");
-    },
-  );
-
+  const moviesWithoutId = [...cineplanetMovies, ...cinemarkMovies, ...cinepolisMovies];
+  const movies = addId(moviesWithoutId);
   const showings = [
     ...cineplanetShowings,
     ...cinemarkShowings.flat(),
     ...cinepolisShowings.flat(),
   ];
 
+  return { theatres, movies, showings };
+}
+
+async function write() {
+  const data = await consolidateData();
+  fs.writeFile(
+    "var/data/theatres.json",
+    JSON.stringify(data.theatres, null, 2),
+    "utf8",
+    (err) => {
+      if (err) {
+        console.error("Error writing file:", err);
+        return;
+      }
+      console.log("File written successfully!");
+    },
+  );
+
+  fs.writeFile(
+    "var/data/movies.json",
+    JSON.stringify(data.movies, null, 2),
+    "utf8",
+    (err) => {
+      if (err) {
+        console.error("Error writing file:", err);
+        return;
+      }
+      console.log("File written successfully!");
+    },
+  );
+
   fs.writeFile(
     "var/data/showings.json",
-    JSON.stringify(showings, null, 2),
+    JSON.stringify(data.showings, null, 2),
     "utf8",
     (err) => {
       if (err) {
@@ -226,4 +230,4 @@ async function handler() {
   );
 }
 
-handler();
+write();
