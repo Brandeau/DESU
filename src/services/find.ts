@@ -10,7 +10,7 @@ import {
   type Showing,
 } from "../clients/types.ts";
 
-function fetchMovies(): Movie[] {
+export function fetchMovies(): Movie[] {
   try {
     const data = fs.readFileSync("./var/data/movies.json", "utf-8");
 
@@ -18,6 +18,24 @@ function fetchMovies(): Movie[] {
   } catch (error) {
     throw Error("Error loading movies", error);
   }
+}
+
+export function fetchMovieTitles(): string[] {
+  const data: Movie[] = fetchMovies();
+
+  const titles = data.map((movie) => {
+    return movie.title;
+  });
+
+  const parsed = titles.reduce((accumulator, current) => {
+    if (!accumulator.includes(current)) {
+      accumulator.push(current);
+    }
+
+    return accumulator;
+  }, [] as string[]);
+
+  return parsed;
 }
 
 export function searchMovieByTitle(title: string) {
