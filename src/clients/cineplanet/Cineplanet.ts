@@ -92,7 +92,6 @@ type CineplanetSessions = {
 };
 
 export type ParsedCineplanetMovie = {
-  source_id: string;
   title: string;
   showings: {
     cinemaId: string;
@@ -160,10 +159,9 @@ export class Cineplanet {
 
   static parseTheatres(obj: CineplanetTheatre): ParsedCinema {
     return {
-      id: obj["ID"],
+      id: `${CINEMA_CHAIN.CINEPLANET}-${obj["ID"]}`,
       name: obj["name"],
       city: obj["city"],
-      chain: CINEMA_CHAIN.CINEPLANET,
     };
   }
 
@@ -178,7 +176,7 @@ export class Cineplanet {
         date["sessions"]?.forEach((session) => {
           showings.push({
             sessions: [session],
-            cinemaId: cinema["cinemaId"],
+            cinemaId: `${CINEMA_CHAIN.CINEPLANET}-${cinema["cinemaId"]}`,
           });
         });
       });

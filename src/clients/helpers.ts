@@ -1,7 +1,7 @@
 import { type ParsedCinemarkMovie } from "./cinemark/Cinemark.ts";
 import { type Movie, type ParsedMovie } from "./types.ts";
 
-export async function reduceMovies(array: ParsedCinemarkMovie[]): Promise<ParsedMovie[]> {
+export function reduceMovies(array: ParsedCinemarkMovie[]): ParsedMovie[] {
   const reducedMovies = array.reduce((accumulator, currentMovie) => {
     const existingMovie = accumulator.find((movie) => movie.title === currentMovie.title);
     //const re = /^.+(?=\s\()/;
@@ -10,7 +10,6 @@ export async function reduceMovies(array: ParsedCinemarkMovie[]): Promise<Parsed
       existingMovie.showings.push(currentMovie.showings);
     } else {
       accumulator.push({
-        source_id: currentMovie.source_id,
         title: currentMovie.title /*.match(re)[0]*/,
         showings: [currentMovie.showings],
         isComingSoon: currentMovie["isComingSoon"],
@@ -23,7 +22,35 @@ export async function reduceMovies(array: ParsedCinemarkMovie[]): Promise<Parsed
   return reducedMovies;
 }
 
-export async function reduceCinemas(array: ParsedMovie[]): Promise<ParsedMovie[]> {
+export function reduceCinepolisMovies(array: ParsedMovie[]): ParsedMovie[] {
+  const reducedMovies = array.reduce((accumulator, currentMovie) => {
+    const existingMovie = accumulator.find((movie) => movie.title === currentMovie.title);
+    //const re = /^.+(?=\s\()/;
+
+    if (existingMovie) {
+      const showings: {
+        cinemaId: string;
+        sessions: string[];
+      }[] = [];
+
+      showings.push(...existingMovie.showings, ...currentMovie.showings);
+
+      existingMovie.showings = showings;
+    } else {
+      accumulator.push({
+        title: currentMovie.title /*.match(re)[0]*/,
+        showings: currentMovie.showings,
+        isComingSoon: currentMovie["isComingSoon"],
+      });
+    }
+
+    return accumulator;
+  }, [] as ParsedMovie[]);
+
+  return reducedMovies;
+}
+
+export function reduceCinemas(array: ParsedMovie[]): ParsedMovie[] {
   const parsed = array.map((movie) => {
     // For each movie, reduce its cinemas array
     const reducedShowings = movie.showings.reduce(
@@ -59,7 +86,7 @@ export async function reduceCinemas(array: ParsedMovie[]): Promise<ParsedMovie[]
   return parsed as ParsedMovie[];
 }
 
-export async function reduceShowings(array: ParsedMovie[]): Promise<ParsedMovie[]> {
+export function reduceShowings(array: ParsedMovie[]): ParsedMovie[] {
   const parsed = array.map((movie) => {
     const reducedShowings = movie.showings.reduce(
       (acc, curr) => {
@@ -103,9 +130,9 @@ export function addId(array: ParsedMovie[]): Movie[] {
   return newArr;
 }
 
-export async function processMovies(arr: ParsedCinemarkMovie[]): Promise<ParsedMovie[]> {
-  const reducedMovies = await reduceMovies(arr);
-  const reducedCinemas = await reduceCinemas(reducedMovies);
+export function processMovies(arr: ParsedCinemarkMovie[]): ParsedMovie[] {
+  const reducedMovies = reduceMovies(arr);
+  const reducedCinemas = reduceCinemas(reducedMovies);
   //const cinemasWithId = await addId(reducedCinemas);
 
   return reducedCinemas;

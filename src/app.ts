@@ -1,3 +1,5 @@
+import { inspect } from "node:util";
+
 import { Command } from "@cliffy/command";
 
 import { searchMovieByTitle } from "./services/find.ts";

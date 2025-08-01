@@ -213,10 +213,9 @@ export class Cinepolis {
     zones.forEach((zone) => {
       zone.cinemas.forEach((cinema) => {
         cinemas.push({
-          id: String(cinema.id),
+          id: `${CINEMA_CHAIN.CINEPOLIS}-${String(cinema.id)}`,
           name: cinema.name,
           city: getKeyFromValue(cinema.id, Cinepolis.cities),
-          chain: CINEMA_CHAIN.CINEPOLIS,
         });
       });
     });
@@ -233,7 +232,7 @@ export class Cinepolis {
     movie.Formats.forEach((format) => {
       format.Showtimes.forEach((showtime) => {
         showings.push({
-          cinemaId: String(showtime.CinemaId),
+          cinemaId: `${CINEMA_CHAIN.CINEPOLIS}-${String(showtime.CinemaId)}`,
           sessions: [showtime.ShowtimeId],
         });
       });

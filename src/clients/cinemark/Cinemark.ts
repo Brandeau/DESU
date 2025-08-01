@@ -135,10 +135,9 @@ export class Cinemark {
 
   static parseTheatres(obj: CinemarkCinema): ParsedCinema {
     return {
-      id: obj["ID"],
+      id: `${CINEMA_CHAIN.CINEMARK}-${obj["ID"]}`,
       name: obj["Name"],
       city: obj["City"],
-      chain: CINEMA_CHAIN.CINEMARK,
     } as ParsedCinema;
   }
 
@@ -165,7 +164,7 @@ export class Cinemark {
             source_id: movie["film_HO_code"],
             title: normalizedTitle,
             showings: {
-              cinemaId: version["id"].split(idRe)[0],
+              cinemaId: `${CINEMA_CHAIN.CINEMARK}-${version["id"].split(idRe)[0]}`,
               sessions: sessions,
             },
             isComingSoon: version["sessions"].length > 0 ? true : false,

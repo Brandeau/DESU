@@ -2,11 +2,9 @@ export type ParsedCinema = {
   id: string;
   name: string;
   city: string;
-  chain: number;
 };
 
 export type ParsedMovie = {
-  source_id: string;
   title: string;
   showings: {
     cinemaId: string;
@@ -17,7 +15,6 @@ export type ParsedMovie = {
 
 export type Movie = {
   id: number;
-  source_id: string;
   title: string;
   showings: {
     cinemaId: string;

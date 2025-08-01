@@ -20,7 +20,7 @@ function fetchMovies(): Movie[] {
   }
 }
 
-function searchMovieByTitle(title: string) {
+export function searchMovieByTitle(title: string) {
   const movies = fetchMovies();
   try {
     const movie = movies.filter((movie) =>
@@ -105,5 +105,3 @@ function replaceAllShowings(movies: Movie[]) {
 
   return arr;
 }
-
-console.log(inspect(searchMovieByTitle("fantásticos"), { depth: 11, colors: true }));
