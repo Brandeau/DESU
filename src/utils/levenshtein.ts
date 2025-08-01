@@ -1,39 +1,61 @@
-export function levenshtein(string1: string, string2: string): number {
-  if (typeof string1 !== "string" || typeof string2 !== "string") {
-    throw new TypeError("Title must be of type string");
+const array: number[] = [];
+const characterCodeCache: number[] = [];
+
+//Similarity algorithm between two strings that returns a percentage
+export default function levenshtein(first, second) {
+  if (first === second) {
+    return 0;
   }
 
-  if (string1.length === 0) {
-    return string2.length;
-  }
-  if (string2.length === 0) {
-    return string1.length;
-  }
+  const swap = first;
 
-  const truncatedString1 = string1.slice(1);
-  const truncatedString2 = string2.slice(1);
-
-  const del = levenshtein(truncatedString1, string2);
-  const ins = levenshtein(string1, truncatedString2);
-  const rep = levenshtein(truncatedString1, truncatedString2);
-
-  if (string1[0] === string2[0]) {
-    return rep;
+  if (first.length > second.length) {
+    first = second;
+    second = swap;
   }
 
-  if (del <= ins && del <= rep) return 1 + del;
+  let firstLength = first.length;
+  let secondLength = second.length;
+  const maxLength = second.length;
 
-  if (ins <= del && ins <= rep) return 1 + ins;
+  if (firstLength === 0) {
+    return secondLength;
+  }
 
-  if (rep <= ins && rep <= del) return 1 + rep;
+  let bCharacterCode;
+  let result;
+  let temporary;
+  let temporary2;
+  let index = 0;
+  let index2 = 0;
 
-  return NaN;
+  while (index < firstLength) {
+    characterCodeCache[index] = first.charCodeAt(index);
+    array[index] = ++index;
+  }
+
+  while (index2 < secondLength) {
+    bCharacterCode = second.charCodeAt(index2);
+    temporary = index2++;
+    result = index2;
+
+    for (index = 0; index < firstLength; index++) {
+      temporary2 =
+        bCharacterCode === characterCodeCache[index] ? temporary : temporary + 1;
+      temporary = array[index];
+
+      result = array[index] =
+        temporary > result
+          ? temporary2 > result
+            ? result + 1
+            : temporary2
+          : temporary2 > temporary
+            ? temporary + 1
+            : temporary2;
+    }
+  }
+  const per = (1 - result / maxLength) * 100;
+  return per;
 }
 
-export function percentageLevenshtein(string1: string, string2: string): number {
-  const distance = levenshtein(string1, string2);
-  const bigger = string1.length > string2.length ? string1.length : string2.length;
-  const percentage = (bigger - distance) / bigger;
-
-  return percentage * 100;
-}
+console.log(levenshtein("LA INFILTRADA", "LA OLA"));
