@@ -1,5 +1,5 @@
 {
-  "name": "cinema-aggregator",
+  "name": "desu",
   "version": "1.0.0",
   "description": "A cinema aggregator that displays all possible showings of a movie across different theater chains",
   "main": "index.js",
