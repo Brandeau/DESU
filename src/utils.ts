@@ -1,3 +1,9 @@
+import { existsSync, mkdirSync } from "node:fs";
+
+import os from "os";
+
+import { write } from "../sbin/process-data.ts";
+
 const array: number[] = [];
 const characterCodeCache: number[] = [];
 
@@ -58,4 +64,20 @@ export default function levenshtein(first, second) {
   return per;
 }
 
-console.log(levenshtein("LA INFILTRADA", "LA OLA"));
+export function populateData() {
+  const oper = os.platform();
+  const home = os.homedir();
+  let path = "";
+
+  if (oper.startsWith("win")) {
+    path = `${home}/.local/var/desu`;
+  } else if (oper.startsWith("dar")) {
+    path = `${home}/Local/AppData`;
+  }
+
+  if (!existsSync(path)) {
+    mkdirSync(path, { recursive: true });
+  }
+
+  write(path);
+}
