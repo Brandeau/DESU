@@ -188,10 +188,10 @@ async function consolidateData() {
   return { theatres, movies, showings };
 }
 
-async function write() {
+export async function write(basePath: string) {
   const data = await consolidateData();
   fs.writeFile(
-    "var/data/theatres.json",
+    `${basePath}/theatres.json`,
     JSON.stringify(data.theatres, null, 2),
     "utf8",
     (err) => {
@@ -204,7 +204,7 @@ async function write() {
   );
 
   fs.writeFile(
-    "var/data/movies.json",
+    `${basePath}/movies.json`,
     JSON.stringify(data.movies, null, 2),
     "utf8",
     (err) => {
@@ -217,7 +217,7 @@ async function write() {
   );
 
   fs.writeFile(
-    "var/data/showings.json",
+    `${basePath}/showings.json`,
     JSON.stringify(data.showings, null, 2),
     "utf8",
     (err) => {
@@ -229,5 +229,3 @@ async function write() {
     },
   );
 }
-
-write();
