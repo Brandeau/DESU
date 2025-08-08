@@ -6,6 +6,7 @@
     "lib": ["esnext"],
     "strictNullChecks": true,
     "module": "nodenext",
+    "resolveJsonModule": true,
     "moduleResolution": "nodenext",
     "target": "esnext"
   }
