@@ -1,8 +1,9 @@
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, statSync } from "node:fs";
+import path from "node:path";
 
 import os from "os";
 
-import { write } from "../sbin/process-data.ts";
+import packageJson from "../package.json" with { type: "json" };
 
 const array: number[] = [];
 const characterCodeCache: number[] = [];
@@ -64,20 +65,67 @@ export default function levenshtein(first, second) {
   return per;
 }
 
-export function populateData() {
+/**
+ * Checks whether data should be populated.
+ *
+ * @returns `true if data was populated more than a week ago, if it is Thursday and
+ *          has not been populated today, or if paths don't exist; false any other
+ *          case`
+ */
+export function shouldPopulate(): boolean {
+  const now = new Date();
+  const nowMs = now.getTime();
+  const folder = buildPath();
+  /**
+   * The period of a standard week in milliseconds.
+   */
+  const weekMs = 604800000;
+
+  const paths = ["theatres.json", "movies.json", "showings.json"].map((file) =>
+    path.join(folder, file),
+  );
+
+  const hasAtLeastOneMissingFile = paths
+    .map((path) => existsSync(path))
+    .some((elem) => elem === false);
+
+  if (hasAtLeastOneMissingFile) return true;
+
+  const birthtimeMs = paths.map((path) => statSync(path)).map((stat) => stat.birthtimeMs);
+  const oldestBirthtimeMs = Math.min(...birthtimeMs);
+  const timeElapsedSinceLastPopulatedMs = nowMs - oldestBirthtimeMs;
+
+  if (timeElapsedSinceLastPopulatedMs > weekMs) {
+    return true;
+  }
+
+  const nowUTC = now.toUTCString();
+  const nowTimestamp = now.toISOString().split("T")[0];
+  const birthTimestamp = new Date(oldestBirthtimeMs).toISOString().split("T")[0];
+
+  if (nowUTC.startsWith("Thu") && birthTimestamp !== nowTimestamp) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Builds correct path for either MacOS or Windows OS.
+ */
+export function buildPath(): string {
   const oper = os.platform();
   const home = os.homedir();
-  let path = "";
 
-  if (oper.startsWith("win")) {
-    path = `${home}/.local/var/desu`;
-  } else if (oper.startsWith("dar")) {
-    path = `${home}/Local/AppData`;
+  const directory = process.env.XDG_DATA_HOME
+    ? path.join(process.env.XDG_DATA_HOME, `${packageJson.name}`)
+    : oper.startsWith("win")
+      ? path.join(process.env.APPDATA!, `${packageJson.name}`)
+      : path.join(home, ".config", `${packageJson.name}`);
+
+  if (!existsSync(directory)) {
+    mkdirSync(directory, { recursive: true });
   }
 
-  if (!existsSync(path)) {
-    mkdirSync(path, { recursive: true });
-  }
-
-  write(path);
+  return directory;
 }
