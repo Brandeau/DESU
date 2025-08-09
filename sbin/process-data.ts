@@ -19,6 +19,8 @@ import {
   reduceShowings,
 } from "../src/clients/helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../src/clients/types.ts";
+import { shouldPopulate } from "../src/utils.ts";
+import { buildPath } from "../src/utils.ts";
 
 const cineplanet = await Cineplanet.init();
 const cinepolis = await Cinepolis.init();
@@ -188,44 +190,48 @@ async function consolidateData() {
   return { theatres, movies, showings };
 }
 
-export async function write(basePath: string) {
-  const data = await consolidateData();
-  fs.writeFile(
-    `${basePath}/theatres.json`,
-    JSON.stringify(data.theatres, null, 2),
-    "utf8",
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-        return;
-      }
-      console.log("File written successfully!");
-    },
-  );
+export async function write(force?: boolean) {
+  const folder = buildPath();
 
-  fs.writeFile(
-    `${basePath}/movies.json`,
-    JSON.stringify(data.movies, null, 2),
-    "utf8",
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-        return;
-      }
-      console.log("File written successfully!");
-    },
-  );
+  if (force || shouldPopulate()) {
+    const data = await consolidateData();
+    fs.writeFile(
+      `${folder}/theatres.json`,
+      JSON.stringify(data.theatres, null, 2),
+      "utf8",
+      (err) => {
+        if (err) {
+          console.error("Error writing file:", err);
+          return;
+        }
+        console.log("File written successfully!");
+      },
+    );
 
-  fs.writeFile(
-    `${basePath}/showings.json`,
-    JSON.stringify(data.showings, null, 2),
-    "utf8",
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-        return;
-      }
-      console.log("File written successfully!");
-    },
-  );
+    fs.writeFile(
+      `${folder}/movies.json`,
+      JSON.stringify(data.movies, null, 2),
+      "utf8",
+      (err) => {
+        if (err) {
+          console.error("Error writing file:", err);
+          return;
+        }
+        console.log("File written successfully!");
+      },
+    );
+
+    fs.writeFile(
+      `${folder}/showings.json`,
+      JSON.stringify(data.showings, null, 2),
+      "utf8",
+      (err) => {
+        if (err) {
+          console.error("Error writing file:", err);
+          return;
+        }
+        console.log("File written successfully!");
+      },
+    );
+  }
 }

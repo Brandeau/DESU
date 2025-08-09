@@ -3,6 +3,7 @@ import { inspect } from "node:util";
 import { Command } from "@cliffy/command";
 import { Select } from "@cliffy/prompt";
 
+import { write } from "../sbin/process-data.ts";
 import { fetchMovieTitles, searchMovieByTitle } from "./services/find.ts";
 
 const titles = fetchMovieTitles();
@@ -16,10 +17,11 @@ new Command()
   .command("search", "Find all available showings of a movie")
   .option("-t, --title <title:string>", "Input title")
   .action(async (options) => {
+    write();
     if (options.title) {
       const results = searchMovieByTitle(options.title);
 
-      console.log(results);
+      console.log(inspect(results, { depth: 13, colors: true }));
     } else {
       const title = await Select.prompt({
         message: "Select an option:",
@@ -28,7 +30,7 @@ new Command()
 
       const results = searchMovieByTitle(title);
 
-      console.log(results);
+      console.log(inspect(results, { depth: 13, colors: true }));
     }
   })
   .parse(process.argv.slice(2));

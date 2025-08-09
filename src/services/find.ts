@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 import { inspect } from "node:util";
 
 import { type ParsedShowing } from "../clients/cinemark/Cinemark.ts";
@@ -9,10 +10,13 @@ import {
   type Sessions,
   type Showing,
 } from "../clients/types.ts";
+import { buildPath } from "../utils.ts";
 
 export function fetchMovies(): Movie[] {
+  const directory = buildPath();
+  const filePath = path.join(directory, "movies.json");
   try {
-    const data = fs.readFileSync("./var/data/movies.json", "utf-8");
+    const data = fs.readFileSync(filePath, "utf-8");
 
     return JSON.parse(data);
   } catch (error) {
@@ -54,8 +58,10 @@ export function searchMovieByTitle(title: string) {
 }
 
 function fetchShowings(): ParsedShowing[] {
+  const directory = buildPath();
+  const filePath = path.join(directory, "showings.json");
   try {
-    const data = fs.readFileSync("./var/data/showings.json", "utf-8");
+    const data = fs.readFileSync(filePath, "utf-8");
 
     return JSON.parse(data);
   } catch (error) {
@@ -63,8 +69,10 @@ function fetchShowings(): ParsedShowing[] {
   }
 }
 function fetchTheatres(): ParsedCinema[] {
+  const directory = buildPath();
+  const filePath = path.join(directory, "theatres.json");
   try {
-    const data = fs.readFileSync("./var/data/theatres.json", "utf-8");
+    const data = fs.readFileSync(filePath, "utf-8");
 
     return JSON.parse(data);
   } catch (error) {
