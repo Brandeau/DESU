@@ -14,6 +14,11 @@ new Command()
   .description(
     "Command line application to fetch all showings for a given movie across all main theatre chains in Santiago, Chile",
   )
+  .command("populate, Populate local movie data")
+  .option("-f, --force", "Force populate data")
+  .action(async (options) => {
+    write(options.force);
+  })
   .command("search", "Find all available showings of a movie")
   .option("-t, --title <title:string>", "Input title")
   .action(async (options) => {
