@@ -1,4 +1,4 @@
-import { CINEMA_CHAIN } from "../../constants.ts";
+import { CINEMA_CHAIN, URLS } from "../../constants.ts";
 import { type ParsedShowing } from "../cinemark/Cinemark.ts";
 import { getEnv, getKeyFromValue } from "../helpers.ts";
 import { customFetch } from "../helpers.ts";
@@ -122,7 +122,7 @@ type CinepolisCinema = {
 };
 
 export class Cinepolis {
-  static url: string = getEnv("CINEPOLIS_URL");
+  static url: string = Buffer.from(URLS.CINEPOLIS, "base64url").toString("utf-8");
 
   static cities = {
     "Antofagasta": [466, 467],

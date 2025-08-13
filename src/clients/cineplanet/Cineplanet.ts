@@ -1,4 +1,4 @@
-import { CINEMA_CHAIN } from "../../constants.ts";
+import { CINEMA_CHAIN, URLS } from "../../constants.ts";
 import { type ParsedShowing } from "../cinemark/Cinemark.ts";
 import { normalizeTitle } from "../helpers.ts";
 import { getEnv } from "../helpers.ts";
@@ -101,7 +101,7 @@ export type ParsedCineplanetMovie = {
 };
 
 export class Cineplanet {
-  static url: string = getEnv("CINEPLANET_URL");
+  static url: string = Buffer.from(URLS.CINEPLANET, "base64url").toString("utf-8");
   subKey = getEnv("SUBSCRIPTION_KEY");
 
   private constructor(readonly cookie: string) {}

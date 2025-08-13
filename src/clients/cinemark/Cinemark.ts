@@ -1,4 +1,4 @@
-import { CINEMA_CHAIN } from "../../constants.ts";
+import { CINEMA_CHAIN, URLS } from "../../constants.ts";
 import { normalizeTitle } from "../helpers.ts";
 import { getEnv } from "../helpers.ts";
 import { type ParsedCinema } from "../types.ts";
@@ -103,7 +103,7 @@ export type ParsedShowing = {
 };
 
 export class Cinemark {
-  static url: string = getEnv("CINEMARK_URL");
+  static url: string = Buffer.from(URLS.CINEMARK, "base64url").toString("utf-8");
 
   static async getTheatres(): Promise<CinemarkTheatres> {
     const response = await fetch(`${this.url}/api/vista/data/theatres`);
