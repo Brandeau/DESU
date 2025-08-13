@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowJs": false,
+    "checkJs": false,
+    "declaration": true,
+    "diagnostics": true,
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "isolatedDeclarations": true,
+    "lib": ["ESNext"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noCheck": true,
+    "noResolve": false,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "target": "ESNext",
+    "types": []
+  }
+}

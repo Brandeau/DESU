@@ -1,13 +1,37 @@
 {
   "compilerOptions": {
     "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "lib": ["esnext"],
-    "strictNullChecks": true,
+    "allowJs": true,
+    "allowUnreachableCode": false,
+    "checkJs": true,
+    "declaration": false,
+    "exactOptionalPropertyTypes": true,
+    "isolatedModules": true,
+    "maxNodeModuleJsDepth": 5,
     "module": "nodenext",
-    "resolveJsonModule": true,
     "moduleResolution": "nodenext",
-    "target": "esnext"
+    "noEmit": true,
+    "noErrorTruncation": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "target": "esnext",
+    "typeRoots": ["./node_modules/@types/"],
+    "types": ["node"],
+    "useUnknownInCatchVariables": true
+  },
+  "exclude": [".tmp", "*.log", "coverage", "dist", "logs", "node_modules", "tmp"],
+  "include": ["tsup.config.ts", "prettier.config.js", "eslint.config.js", "src"],
+  "typeAcquisition": {
+    "enable": false
   }
 }
