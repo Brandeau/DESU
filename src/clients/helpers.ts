@@ -148,7 +148,7 @@ export function getEnv(key: string, fallback?: string): string {
   return env;
 }
 
-export function normalizeTitle(title) {
+export function normalizeTitle(title: string) {
   return title.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
@@ -184,4 +184,20 @@ export async function customFetch(...args: Parameters<typeof fetch>): Promise<Re
     });
   }
   return response;
+}
+
+export async function getMainJS(url: string): Promise<string> {
+  const response = await fetch(url);
+
+  const text = response.text();
+
+  const regex = /\/main.*.js/;
+
+  const main = (await text).match(regex);
+
+  if (!main) {
+    throw Error("Main JavaScript file not found");
+  }
+
+  return main[0];
 }
