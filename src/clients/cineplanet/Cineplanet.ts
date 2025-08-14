@@ -1,7 +1,6 @@
 import { CINEMA_CHAIN, URLS } from "../../constants.ts";
 import { type ParsedShowing } from "../cinemark/Cinemark.ts";
 import { normalizeTitle } from "../helpers.ts";
-import { getEnv } from "../helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../types.ts";
 
 type CineplanetTheatre = {
@@ -102,25 +101,28 @@ export type ParsedCineplanetMovie = {
 
 export class Cineplanet {
   static url: string = Buffer.from(URLS.CINEPLANET, "base64url").toString("utf-8");
-  subKey = getEnv("SUBSCRIPTION_KEY");
 
-  private constructor(readonly cookie: string) {}
+  private constructor(
+    readonly cookie: string,
+    readonly subKey: string,
+  ) {}
 
   static async init() {
-    const cookie = await this.getCookies(this.url);
+    const cookie = await this.getCookies();
+    const subKey = await this.getSubscriptionKey();
 
-    return new Cineplanet(cookie);
+    return new Cineplanet(cookie, subKey);
   }
 
-  static async getCookies(url: string): Promise<string> {
-    const response = await fetch(url);
+  static async getCookies(): Promise<string> {
+    const response = await fetch(Cineplanet.url);
     const cookie = response.headers.getSetCookie()[0].split(";")[0];
 
     return cookie;
   }
 
   static async getMainJS(): Promise<string> {
-    const response = await fetch(URLS.CINEPLANET);
+    const response = await fetch(Cineplanet.url);
     const regex = /\/main.*.js/;
 
     const text = response.text();
@@ -132,6 +134,23 @@ export class Cineplanet {
     }
 
     return main[0];
+  }
+
+  static async getSubscriptionKey(): Promise<string> {
+    const endpoint = await this.getMainJS();
+
+    const response = await fetch(`${Cineplanet.url}${endpoint}`);
+    const text = response.text();
+
+    const regex = /(?<=apiManagerTokenMicroservices:)(.*,)/;
+
+    const token = (await text).match(regex);
+
+    if (!token) {
+      throw Error("Subscription key not found");
+    }
+
+    return token[0].split(",")[0];
   }
 
   async getTheatres(): Promise<CineplanetTheatres> {
