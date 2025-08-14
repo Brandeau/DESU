@@ -148,7 +148,7 @@ export function getEnv(key: string, fallback?: string): string {
   return env;
 }
 
-export function normalizeTitle(title) {
+export function normalizeTitle(title: string) {
   return title.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
