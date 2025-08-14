@@ -118,6 +118,22 @@ export class Cineplanet {
 
     return cookie;
   }
+
+  static async getMainJS(): Promise<string> {
+    const response = await fetch(URLS.CINEPLANET);
+    const regex = /\/main.*.js/;
+
+    const text = response.text();
+
+    const main = (await text).match(regex);
+
+    if (!main) {
+      throw Error("Main JavaScript file not found");
+    }
+
+    return main[0];
+  }
+
   async getTheatres(): Promise<CineplanetTheatres> {
     const response = await fetch(`${Cineplanet.url}/api/cache/cinemascache`, {
       method: "GET",
