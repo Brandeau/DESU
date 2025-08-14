@@ -25,7 +25,7 @@ const shared: Options = {
 };
 
 const ENTRY_FILE = "src/app.ts";
-const OUT_DIR = "uwu";
+const OUT_DIR = "bin";
 
 const bin: Options = {
   ...shared,
