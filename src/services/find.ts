@@ -20,7 +20,7 @@ export function fetchMovies(): Movie[] {
 
     return JSON.parse(data);
   } catch (error) {
-    throw Error("Error loading movies", error);
+    throw Error("Error loading movies", { cause: error });
   }
 }
 
@@ -53,7 +53,7 @@ export function searchMovieByTitle(title: string) {
 
     return fullMovie;
   } catch (error) {
-    throw Error("No movies with that name", error);
+    throw Error("No movies with that name", { cause: error });
   }
 }
 
@@ -65,7 +65,7 @@ function fetchShowings(): ParsedShowing[] {
 
     return JSON.parse(data);
   } catch (error) {
-    throw Error("Error loading showings", error);
+    throw Error("Error loading showings", { cause: error });
   }
 }
 function fetchTheatres(): ParsedCinema[] {
@@ -76,7 +76,7 @@ function fetchTheatres(): ParsedCinema[] {
 
     return JSON.parse(data);
   } catch (error) {
-    throw Error("Error loading theatres", error);
+    throw Error("Error loading theatres", { cause: error });
   }
 }
 
