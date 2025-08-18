@@ -2,7 +2,9 @@
   "name": "desu",
   "version": "1.0.5",
   "description": "A cinema aggregator that displays all possible showings of a movie across different theater chains",
-  "main": "index.js",
+  "bin": {
+    "desu": "./bin/app.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup"
