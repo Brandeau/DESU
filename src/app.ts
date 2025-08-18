@@ -6,8 +6,6 @@ import { Select } from "@cliffy/prompt";
 import { write } from "../sbin/process-data.ts";
 import { fetchMovieTitles, searchMovieByTitle } from "./services/find.ts";
 
-const titles = fetchMovieTitles();
-
 new Command()
   .name("desu")
   .version("0.1.0")
@@ -23,6 +21,7 @@ new Command()
   .option("-t, --title <title:string>", "Input title")
   .action(async (options) => {
     write();
+    const titles = fetchMovieTitles();
     if (options.title) {
       const results = searchMovieByTitle(options.title);
 
