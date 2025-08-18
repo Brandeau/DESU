@@ -17,6 +17,9 @@
   "bugs": {
     "url": "https://github.com/Brandeau/DESU/issues"
   },
+  "files": [
+    "bin"
+  ],
   "homepage": "https://github.com/Brandeau/DESU#readme",
   "devDependencies": {
     "@toridoriv/eslint-config": "github:toridoriv/eslint-config",
@@ -30,5 +33,9 @@
   "dependencies": {
     "@cliffy/command": "npm:@jsr/cliffy__command@^1.0.0-rc.8",
     "@cliffy/prompt": "npm:@jsr/cliffy__prompt@^1.0.0-rc.8"
+  },
+   "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }
