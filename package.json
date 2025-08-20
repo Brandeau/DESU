@@ -1,5 +1,5 @@
 {
-  "name": "desu",
+  "name": "@brandeau/desu",
   "version": "1.0.5",
   "description": "A cinema aggregator that displays all possible showings of a movie across different theater chains",
   "bin": {
