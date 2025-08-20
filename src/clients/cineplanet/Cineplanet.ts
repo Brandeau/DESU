@@ -109,7 +109,11 @@ export class Cineplanet {
 
   static async init() {
     const cookie = await this.getCookies();
-    const subKey = await this.getSubscriptionKey();
+    //const subKey = await this.getSubscriptionKey();
+    const subKey = Buffer.from(
+      "YzZmOTdjMzM2YjYwNDY5MTg5YTAxMGE1ODM2ZmU4OTE=",
+      "base64",
+    ).toString("utf-8");
 
     return new Cineplanet(cookie, subKey);
   }
