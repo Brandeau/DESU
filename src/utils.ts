@@ -1,5 +1,7 @@
-import { existsSync, mkdirSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import os from "os";
 
@@ -9,7 +11,7 @@ const array: number[] = [];
 const characterCodeCache: number[] = [];
 
 //Similarity algorithm between two strings that returns a percentage
-export default function levenshtein(first, second) {
+export default function levenshtein(first: string, second: string) {
   if (first === second) {
     return 0;
   }
@@ -91,9 +93,9 @@ export function shouldPopulate(): boolean {
 
   if (hasAtLeastOneMissingFile) return true;
 
-  const birthtimeMs = paths.map((path) => statSync(path)).map((stat) => stat.birthtimeMs);
-  const oldestBirthtimeMs = Math.min(...birthtimeMs);
-  const timeElapsedSinceLastPopulatedMs = nowMs - oldestBirthtimeMs;
+  const modifiedTimesMs = paths.map((path) => statSync(path)).map((stat) => stat.mtimeMs);
+  const oldestModifiedtimeMs = Math.min(...modifiedTimesMs);
+  const timeElapsedSinceLastPopulatedMs = nowMs - oldestModifiedtimeMs;
 
   if (timeElapsedSinceLastPopulatedMs > weekMs) {
     return true;
@@ -101,9 +103,9 @@ export function shouldPopulate(): boolean {
 
   const nowUTC = now.toUTCString();
   const nowTimestamp = now.toISOString().split("T")[0];
-  const birthTimestamp = new Date(oldestBirthtimeMs).toISOString().split("T")[0];
+  const modifiedTimestamp = new Date(oldestModifiedtimeMs).toISOString().split("T")[0];
 
-  if (nowUTC.startsWith("Thu") && birthTimestamp !== nowTimestamp) {
+  if (nowUTC.startsWith("Thu") && modifiedTimestamp !== nowTimestamp) {
     return true;
   }
 
@@ -126,6 +128,19 @@ export function buildPath(): string {
   if (!existsSync(directory)) {
     mkdirSync(directory, { recursive: true });
   }
-
   return directory;
+}
+
+export function getPackageJsonVersion() {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
+  const packagePath = path.resolve(__dirname, "..", "package.json");
+  const packageData = JSON.parse(readFileSync(packagePath, "utf8"));
+
+  if (Object.keys(packageData).includes("version")) {
+    return packageData.version;
+  }
+
+  throw Error('Error: "version" key not found in package.json.');
 }

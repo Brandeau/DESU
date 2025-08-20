@@ -5,10 +5,13 @@ import { Select } from "@cliffy/prompt";
 
 import { write } from "../sbin/process-data.ts";
 import { fetchMovieTitles, searchMovieByTitle } from "./services/find.ts";
+import { getPackageJsonVersion } from "./utils.ts";
+
+const version = await getPackageJsonVersion();
 
 new Command()
   .name("desu")
-  .version("0.1.0")
+  .version(version)
   .description(
     "Command line application to fetch all showings for a given movie across all main theatre chains in Santiago, Chile",
   )
