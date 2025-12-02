@@ -1,3 +1,6 @@
+import http from "node:http";
+import https from "node:https";
+
 import { type ParsedCinemarkMovie } from "./cinemark/Cinemark.ts";
 import { type Movie, type ParsedMovie } from "./types.ts";
 
@@ -184,4 +187,57 @@ export async function customFetch(...args: Parameters<typeof fetch>): Promise<Re
     });
   }
   return response;
+}
+
+type RequestOptions = Omit<
+  https.RequestOptions | http.RequestOptions,
+  "hostname" | "port" | "path" | "pathname" | "headers"
+> & {
+  headers?: Record<string, string>;
+};
+
+export function customFetchCinepolis(
+  url: string | URL,
+  { headers = {}, ...options }: RequestOptions = {},
+) {
+  const _url = new URL(url);
+  const client = _url.protocol === "https:" ? https : http;
+  const _options: http.RequestOptions = {
+    hostname: _url.host,
+    path: _url.pathname + _url.search,
+    port: _url.port,
+    method: "GET",
+    headers: {
+      Host: _url.host,
+      ...headers,
+    },
+    ...options,
+  };
+
+  const { promise, resolve, reject } = Promise.withResolvers<Response>();
+
+  const req = client.request(_options, function (res) {
+    const chunks: Uint8Array<ArrayBufferLike>[] = [];
+
+    res.on("data", (chunk: Uint8Array<ArrayBufferLike>) => {
+      chunks.push(chunk);
+    });
+
+    res.on("end", () => {
+      const response = new Response(Buffer.concat(chunks), {
+        status: res.statusCode || 500,
+        statusText: res.statusMessage || "",
+        headers: res.headers as HeadersInit,
+      });
+      return resolve(response);
+    });
+
+    res.on("error", (err) => {
+      return reject(err);
+    });
+  });
+
+  req.end();
+
+  return promise;
 }

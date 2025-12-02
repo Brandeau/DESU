@@ -1,6 +1,9 @@
+import http from "node:http";
+import https from "node:https";
+
 import { CINEMA_CHAIN, URLS } from "../../constants.ts";
 import { type ParsedShowing } from "../cinemark/Cinemark.ts";
-import { getEnv, getKeyFromValue } from "../helpers.ts";
+import { customFetchCinepolis, getEnv, getKeyFromValue } from "../helpers.ts";
 import { customFetch } from "../helpers.ts";
 import { type ParsedCinema, type ParsedMovie } from "../types.ts";
 
@@ -121,6 +124,13 @@ type CinepolisCinema = {
   };
 };
 
+type RequestOptions = Omit<
+  https.RequestOptions | http.RequestOptions,
+  "hostname" | "port" | "path" | "pathname" | "headers"
+> & {
+  headers?: Record<string, string>;
+};
+
 export class Cinepolis {
   static url: string = Buffer.from(URLS.CINEPOLIS, "base64url").toString("utf-8");
 
@@ -179,11 +189,17 @@ export class Cinepolis {
   }
 
   async getTheatres(): Promise<CinepolisZoneFull[]> {
-    const response = await customFetch(
+    const response = await customFetchCinepolis(
       "https://sls-api-compra.cinepolis.com/api/location/cities?countryCode=CL",
       {
         headers: {
-          "sec-ch-ua-mobile": "?0",
+          "Sec-Fetch-Site": "none",
+          "Sec-Fetch-Dest": "document",
+          "Sec-Fetch-Mode": "navigate",
+          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Safari/605.1.15",
         },
       },
     );
